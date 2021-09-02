@@ -5,11 +5,13 @@
 /.pnp
 .pnp.js
 
+# Secret values
+build-time-constants/**/secrets.js
+
 # testing
 /.coverage
 
-# production
-/build
+# build
 /dist
 
 # misc

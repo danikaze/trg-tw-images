@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es6",
     "lib": ["esnext"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -19,6 +18,10 @@
       "@utils/*": ["src/utils/*"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "build-time-constants/build.d.ts",
+    "build-time-constants/constants.d.ts",
+    "src/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

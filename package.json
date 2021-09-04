@@ -21,7 +21,11 @@
     "url": "https://github.com/danikaze/trg-tw-images/issues"
   },
   "homepage": "https://github.com/danikaze/trg-tw-images#readme",
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/plugin-proposal-class-properties": "^7.14.5",

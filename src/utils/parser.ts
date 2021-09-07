@@ -18,6 +18,32 @@ export function getHref(element: Element | Element[]): string | undefined {
   return elem?.attribs?.href || '';
 }
 
+export function getAncestor(
+  elem: Element,
+  matchClasses: string | string[]
+): Element | undefined {
+  const classes = Array.isArray(matchClasses) ? matchClasses : [matchClasses];
+  let el = elem.parent as Element;
+  while (el) {
+    const elemClasses = el.attribs.class;
+    if (
+      elemClasses &&
+      classes.every((className) => elemClasses.includes(className))
+    ) {
+      return el;
+    }
+    el = el.parent as Element;
+  }
+}
+
+export function getPreviousSibling(node: Node): Node | undefined {
+  const parent = node.parent;
+  if (!parent) return;
+  const index = parent.children.findIndex((sibling) => sibling === node);
+  if (index === 0) return;
+  return parent.children[index - 1];
+}
+
 function isNodeWithChildren(node: Node): node is NodeWithChildren {
   return 'children' in node;
 }

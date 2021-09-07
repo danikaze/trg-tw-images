@@ -51,3 +51,9 @@ export const TWEET_MAX_LENGTH = 280;
  * Delete images after tweeting them or not
  */
 export const DELETE_IMAGES = false;
+
+/**
+ * When selecting game information, it will try to select elements based on
+ * this setting when available
+ */
+export const GAME_PREFERRED_LANGS = ['Spain'];

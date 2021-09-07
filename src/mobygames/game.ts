@@ -2,21 +2,12 @@ import { default as cheerio, CheerioAPI, Element } from 'cheerio';
 import { downloadHtml } from '@utils/download';
 import { getHref, getInnerText } from '@utils/parser';
 import { getLogger } from '@utils/logger';
-import { Platform } from '.';
+import { GameFullInfo, Platform } from 'src/interfaces';
 import { PlatformGames } from './platform';
 import { ImageList } from './image-list';
 
-export interface GameFullInfo {
-  name: string;
-  year?: number;
-  platform?: Platform;
-  otherPlatforms?: Platform[];
-  gameCoverImagePageUrl?: string;
-  coverArtImagePageUrls?: string[];
-  screenshotsImagePageUrls?: string[];
-}
-
 const logger = getLogger('Game');
+
 export class Game {
   protected readonly url: string;
 

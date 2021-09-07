@@ -19,6 +19,7 @@ function getOptions() {
 
   return {
     dry: getFlag('dry', false),
+    gameUrl: getString('game', ''),
     reset: getFlag('reset', false),
     logSilent: getFlag('log.silent', false),
     logConsole: getBool('log.console', true),

@@ -1,10 +1,48 @@
 import { join } from 'path';
 
-export const PATH = {
-  TEMP_FOLDER: join(__dirname, 'temp'),
-};
+export const PATH_TEMP_FOLDER = join(__dirname, 'temp');
 
-export const MAX_YEAR = 1998;
+/**
+ * No game older than this will be chosen
+ */
+export const GAME_YEAR_MIN = 1900;
+/**
+ * No game younger than this will be chosen
+ */
+export const GAME_YEAR_MAX = 1998;
 
-export const COVER_ART_IMAGES = 1;
-export const MAX_IMAGES = 4;
+/**
+ * Number of Cover Art images to include
+ */
+export const IMAGES_COVER_ART = 1;
+/**
+ * Maximum number of images to include in a tweet
+ * (to be filled with screenshots)
+ */
+export const IMAGES_MAX = 4;
+
+/**
+ * Avoid images with this extensions if there's more than 1 image
+ */
+export const IMAGES_NO_EXT = ['.gif'];
+
+/**
+ * Minimum number of platforms to fit in the tweet before showing the
+ * "Other platforms" section (0 = no limit)
+ */
+export const OTHER_PLATFORMS_MIN = 0;
+/**
+ * Maximum number of platforms to fit in the tweet (0 = no limit)
+ * (limited by `TWEET_MAX_LENGTH` anyways)
+ */
+export const OTHER_PLATFORMS_MAX = 0;
+
+/**
+ * Maximum number of characters of a tweet
+ */
+export const TWEET_MAX_LENGTH = 280;
+
+/**
+ * Delete images after tweeting them or not
+ */
+export const DELETE_IMAGES = false;

@@ -21,8 +21,11 @@ export interface ImageInfo {
   url: string;
   filePath: string;
   type?: ImageType;
+  coverArtType?: CoverArtType;
   alt?: string;
 }
+
+export type ThumbnailInfo = Omit<ImageInfo, 'filePath'>;
 
 export type CoverArtType =
   | 'front-cover'
@@ -34,18 +37,13 @@ export type CoverArtType =
   | 'jewel-case-back'
   | 'other';
 
-export interface CoverArtInfo {
-  url: string;
-  type: CoverArtType;
-  countries?: string[];
-}
-
 export interface GameFullInfo {
+  url: string;
   name: string;
   year?: number;
   platform?: Platform;
   otherPlatforms?: Platform[];
   gameCoverImagePageUrl?: string;
-  coverArtImagePageUrls?: string[];
-  screenshotsImagePageUrls?: string[];
+  coverArtImagePageUrls?: ThumbnailInfo[];
+  screenshotsImagePageUrls?: ThumbnailInfo[];
 }

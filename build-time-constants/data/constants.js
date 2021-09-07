@@ -1,3 +1,1 @@
-module.exports = {
-  EXAMPLE: 'EXAMPLE',
-};
+module.exports = {};

@@ -7,6 +7,7 @@ const logger = getLogger();
 
 async function run(): Promise<void> {
   const cliOptions = getCliOptions();
+
   try {
     logger.info('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓');
     logger.info(

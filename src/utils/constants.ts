@@ -27,11 +27,6 @@ export const IMAGES_MAX = 4;
 export const IMAGES_INCLUDE_ALT = false;
 
 /**
- * Avoid images with this extensions if there's more than 1 image
- */
-export const IMAGES_NO_EXT = ['.gif'];
-
-/**
  * Minimum number of platforms to fit in the tweet before showing the
  * "Other platforms" section (0 = no limit)
  */

@@ -6,6 +6,7 @@ import {
   OTHER_PLATFORMS_MAX,
   OTHER_PLATFORMS_MIN,
   TWEET_MAX_LENGTH,
+  GAME_PREFERRED_LANGS,
 } from '@utils/constants';
 import { getLogger } from '@utils/logger';
 import { selectRandom } from '@utils/random';
@@ -58,8 +59,18 @@ export class App {
       const frontCover = coverArtImagePageUrls.filter(
         (cover) => cover.coverArtType === 'front-cover'
       );
-      const selected =
-        frontCover.length > 0 ? frontCover : coverArtImagePageUrls;
+      let selected = frontCover.length > 0 ? frontCover : coverArtImagePageUrls;
+
+      if (GAME_PREFERRED_LANGS.length) {
+        const langImages = selected.filter((cover) =>
+          GAME_PREFERRED_LANGS.map((lang) => lang.toLowerCase()).some((lang) =>
+            cover.countries?.includes(lang)
+          )
+        );
+        if (langImages.length) {
+          selected = langImages;
+        }
+      }
 
       paths.push(
         ...selectRandom(selected, Math.min(IMAGES_COVER_ART, IMAGES_MAX)).map(

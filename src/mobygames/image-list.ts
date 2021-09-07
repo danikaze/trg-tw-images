@@ -1,6 +1,11 @@
-import { Node } from 'domhandler';
+import { Element, Node } from 'domhandler';
 import { default as cheerio, CheerioAPI } from 'cheerio';
-import { getHref, getInnerText } from '@utils/parser';
+import {
+  getAncestor,
+  getHref,
+  getInnerText,
+  getPreviousSibling,
+} from '@utils/parser';
 import { downloadHtml } from '@utils/download';
 import { ImageType, CoverArtType, ThumbnailInfo } from 'src/interfaces';
 
@@ -42,11 +47,13 @@ export class ImageList {
         const coverArtType =
           pageType === 'cover-art' ? this.getCoverArtType($, thumb) : undefined;
         const alt = this.getCaption($, thumb, pageType);
+        const countries = this.getCountries($, thumb as Element);
 
         return {
           url,
           coverArtType,
           alt,
+          countries,
           type: pageType,
         } as ThumbnailInfo;
       })
@@ -70,15 +77,24 @@ export class ImageList {
     if (text === 'Promo Art') return 'promo-art';
   }
 
-  protected getCountries($: CheerioAPI, context: Node): string[] | undefined {
-    const countryTr = Array.from($('tr')).filter((tr) =>
+  protected getCountries(
+    $: CheerioAPI,
+    context: Element
+  ): string[] | undefined {
+    const row = getAncestor(context, ['row']);
+    if (!row) return;
+    const heading = getPreviousSibling(row);
+    if (!heading) return;
+
+    const countryTr = Array.from($('tr', heading)).filter((tr) =>
       getInnerText(tr.children[0]).startsWith('Countr')
     )[0];
     if (!countryTr) return;
 
-    return Array.from($('span', countryTr.children[2])).map((span) =>
-      getInnerText(span)
-    );
+    return Array.from($('span', countryTr.children[2]))
+      .map((span) => getInnerText(span))
+      .filter((text) => !!text)
+      .map((country) => country.trim().toLowerCase());
   }
 
   protected getCaption(

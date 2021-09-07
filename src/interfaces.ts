@@ -23,6 +23,7 @@ export interface ImageInfo {
   type?: ImageType;
   coverArtType?: CoverArtType;
   alt?: string;
+  countries?: string[];
 }
 
 export type ThumbnailInfo = Omit<ImageInfo, 'filePath'>;

@@ -22,6 +22,11 @@ export const IMAGES_COVER_ART = 1;
 export const IMAGES_MAX = 4;
 
 /**
+ * If `true`, ALT text will be sent to twitter if available
+ */
+export const IMAGES_INCLUDE_ALT = false;
+
+/**
  * Avoid images with this extensions if there's more than 1 image
  */
 export const IMAGES_NO_EXT = ['.gif'];

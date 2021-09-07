@@ -1,11 +1,12 @@
 /*
  * Data from constants.js
  */
-/** Example of a value available in the whole application */
-declare const EXAMPLE: string;
 
 /*
  * Data from secrets.js
  */
-/** Example of a secret value available in the whole application */
-declare const SECRET_EXAMPLE: string;
+declare const TWITTER_ACCOUNT_NAME: string;
+declare const TWITTER_API_KEY: string;
+declare const TWITTER_API_KEY_SECRET: string;
+declare const TWITTER_ACCESS_TOKEN: string;
+declare const TWITTER_ACCESS_TOKEN_SECRET: string;

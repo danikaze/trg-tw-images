@@ -15,7 +15,6 @@ export class MobyGames {
       'amiga',
       'dos',
       'gameboy',
-      'gameboy-advance',
       'gameboy-color',
       'game-gear',
       'nes',

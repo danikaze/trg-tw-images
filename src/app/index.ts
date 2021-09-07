@@ -54,15 +54,24 @@ export class App {
     const paths: string[] = [];
     const { coverArtImagePageUrls, screenshotsImagePageUrls } = game;
 
-    paths.push(
-      ...selectRandom(
-        coverArtImagePageUrls,
-        Math.min(IMAGES_COVER_ART, IMAGES_MAX)
-      )
-    );
+    if (coverArtImagePageUrls) {
+      const frontCover = coverArtImagePageUrls.filter(
+        (cover) => cover.coverArtType === 'front-cover'
+      );
+      const selected =
+        frontCover.length > 0 ? frontCover : coverArtImagePageUrls;
+
+      paths.push(
+        ...selectRandom(selected, Math.min(IMAGES_COVER_ART, IMAGES_MAX)).map(
+          (info) => info.url
+        )
+      );
+    }
 
     paths.push(
-      ...selectRandom(screenshotsImagePageUrls, IMAGES_MAX - paths.length)
+      ...selectRandom(screenshotsImagePageUrls, IMAGES_MAX - paths.length).map(
+        (info) => info.url
+      )
     );
 
     return paths;

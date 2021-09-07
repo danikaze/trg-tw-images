@@ -22,7 +22,11 @@
   },
   "homepage": "https://github.com/danikaze/trg-tw-images#readme",
   "dependencies": {
+    "axios": "^0.21.3",
     "chalk": "^4.1.2",
+    "cheerio": "^1.0.0-rc.10",
+    "domhandler": "^4.2.2",
+    "mkdirp": "^1.0.4",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
@@ -35,6 +39,8 @@
     "@babel/plugin-transform-react-jsx": "^7.14.9",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
+    "@types/domhandler": "^2.4.2",
+    "@types/mkdirp": "^1.0.2",
     "@types/node": "^16.7.10",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/eslint-plugin-tslint": "^4.30.0",

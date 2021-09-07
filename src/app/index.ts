@@ -13,7 +13,7 @@ import { MobyGames } from 'src/mobygames';
 import { Game, GameFullInfo } from 'src/mobygames/game';
 import { Image, ImageInfo, imageInfoSorter } from 'src/mobygames/image';
 import { PlatformGames } from 'src/mobygames/platform';
-import { tweetImage } from 'src/twitter';
+import { Twitter } from 'src/twitter';
 
 interface AppOptions {
   dry: boolean;
@@ -70,26 +70,28 @@ export class App {
 
   protected static getTweetText(game: GameFullInfo): string {
     const line1 = `【${game.name}】`;
-    const line2 =
-      !game.year && !game.platform
-        ? ''
-        : game.year && game.platform
-        ? `${PlatformGames.getName(game.platform)} (${game.year})`
-        : String(game.year) || PlatformGames.getName(game.platform!);
+    const line2 = (() => {
+      const line =
+        !game.year && !game.platform
+          ? ''
+          : game.year && game.platform
+          ? `${PlatformGames.getName(game.platform)} (${game.year})`
+          : String(game.year) || PlatformGames.getName(game.platform!);
 
-    const main = [line1, line2 ? ` ※ ${line2}` : '', '\n']
-      .map((line) => line.trim())
-      .filter((line) => !!line)
-      .join('\n');
+      return line ? ` ※ ${line}` : '';
+    })();
+
+    const main = [line1, '\n', line2].filter((line) => !!line).join('\n');
 
     if (!game.otherPlatforms) return main;
 
     /**
+     * 1 for the new line
      * 2 for ellipsis
      * 1 extra for each 【】 in the title
      * 1 extra for each ※
      */
-    const TEXT_EXTRA_LENGTH = 6;
+    const TEXT_EXTRA_LENGTH = 7;
     const otherPlatformsText = '\n ※ Otras plataformas: ';
     const otherPlatforms: string[] = [];
 
@@ -181,9 +183,11 @@ export class App {
     );
 
     if (this.dry) return false;
+    if (images.length === 0) return false;
 
     try {
-      tweetImage(text, images);
+      const twitter = new Twitter(TWITTER_ACCOUNT_NAME);
+      await twitter.tweetImages(text, images);
       return true;
     } catch (e) {
       return false;

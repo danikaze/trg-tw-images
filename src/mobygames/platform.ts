@@ -1,17 +1,11 @@
 import { default as cheerio, CheerioAPI } from 'cheerio';
 import { downloadHtml } from '@utils/download';
 import { PLATFORM_NAMES } from './constants';
-import { Platform } from '.';
 import { selectRandom } from '@utils/random';
 import { GAME_YEAR_MAX, GAME_YEAR_MIN } from '@utils/constants';
 import { getLogger } from '@utils/logger';
 import { getHref, getInnerText } from '@utils/parser';
-
-interface GameInfo {
-  url: string;
-  name: string;
-  year: number;
-}
+import { GameInfo, Platform } from 'src/interfaces';
 
 const logger = getLogger('Platform');
 
@@ -34,7 +28,9 @@ export class PlatformGames {
     return PlatformGames.getName(this.platform);
   }
 
-  public async getRandomGameUrl(): Promise<string | undefined> {
+  public async getRandomGameUrl(
+    specifiedYear?: number
+  ): Promise<string | undefined> {
     logger.info(`Searching for a game: ${this.platform}`);
     const $ = await this.load();
     const yearsFirstPages = this.getYearsFirstPage($);
@@ -52,7 +48,7 @@ export class PlatformGames {
     const MAX_RETRIES = 5;
     let tries = 0;
     while (tries < MAX_RETRIES) {
-      const year = selectRandom(limitedYears)!;
+      const year = specifiedYear || selectRandom(limitedYears)!;
       logger.info(`Year: ${year}`);
       const games = await this.getYearGames(year, yearsFirstPages[year]);
       const game = selectRandom(games);

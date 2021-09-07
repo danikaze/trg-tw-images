@@ -3,14 +3,7 @@ import { downloadHtml, downloadImage } from '@utils/download';
 import { getInnerText } from '@utils/parser';
 import { getTempFilePath } from '@utils/get-temp-file-path';
 import { getLogger } from '@utils/logger';
-import { ImageType } from '.';
-
-export interface ImageInfo {
-  url: string;
-  filePath: string;
-  type?: ImageType;
-  alt?: string;
-}
+import { ImageInfo, ImageType } from 'src/interfaces';
 
 export function imageInfoSorter(a: ImageInfo, b: ImageInfo): number {
   let ia = IMAGE_TYPE_ORDER.indexOf(a.type!);

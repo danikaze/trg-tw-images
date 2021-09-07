@@ -8,8 +8,8 @@ const logger = getLogger();
 async function run(): Promise<void> {
   const cliOptions = getCliOptions();
 
+  logger.info('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓');
   try {
-    logger.info('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓');
     logger.info(
       `Starting (v${PACKAGE_VERSION}). cli-options: ${JSON.stringify(
         cliOptions,
@@ -20,10 +20,10 @@ async function run(): Promise<void> {
     db.load();
     const app = new App(cliOptions);
     await app.run();
-    logger.info('↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n');
   } catch (error) {
     logger.error('Unexpected error:', (error as Error).stack);
   }
+  logger.info('↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n');
 }
 
 run();

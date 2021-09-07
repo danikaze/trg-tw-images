@@ -27,6 +27,7 @@
     "cheerio": "^1.0.0-rc.10",
     "domhandler": "^4.2.2",
     "mkdirp": "^1.0.4",
+    "sharp": "^0.29.1",
     "twit": "^2.2.11",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
@@ -43,6 +44,7 @@
     "@types/domhandler": "^2.4.2",
     "@types/mkdirp": "^1.0.2",
     "@types/node": "^16.7.10",
+    "@types/sharp": "^0.28.6",
     "@types/twit": "^2.2.30",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/eslint-plugin-tslint": "^4.30.0",
@@ -59,6 +61,7 @@
     "eslint-plugin-sonarjs": "^0.10.0",
     "eslint-plugin-unicorn": "^35.0.0",
     "husky": "^7.0.0",
+    "node-loader": "^2.0.0",
     "prettier": "^2.3.2",
     "sonarjs": "^1.0.0",
     "ts-loader": "^9.2.5",

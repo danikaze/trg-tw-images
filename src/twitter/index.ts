@@ -1,9 +1,10 @@
 import { readFile as rf } from 'fs';
-import { extname } from 'path';
 import { promisify } from 'util';
+import { extname } from 'path';
 import { default as Twit } from 'twit';
-import { IMAGES_INCLUDE_ALT, IMAGES_NO_EXT } from '@utils/constants';
+import { IMAGES_INCLUDE_ALT } from '@utils/constants';
 import { getLogger } from '@utils/logger';
+import { gif2png } from '@utils/gif-to-png';
 
 const readFile = promisify(rf);
 const logger = getLogger('Twitter');
@@ -52,15 +53,8 @@ export class Twitter {
     text: string,
     images: TwitterImageInfo[]
   ): Promise<void> {
-    const imageList =
-      images.length <= 1
-        ? images
-        : images.filter(
-            (image) => !IMAGES_NO_EXT.includes(extname(image.filePath))
-          );
-
     const media_ids = await Promise.all(
-      imageList.map((image) => this.uploadImage(image))
+      images.map((image) => this.uploadImage(image))
     );
 
     await this.tweet({
@@ -91,6 +85,13 @@ export class Twitter {
    * Upload an image and return its ID
    */
   protected async uploadImage(image: TwitterImageInfo): Promise<string> {
+    // twitter only allows 1 image if a gif is include, and since we are
+    // handling screenshots here, we just convert them to png before
+    // uploading them
+    if (extname(image.filePath) === '.gif') {
+      image.filePath = await gif2png(image.filePath);
+    }
+
     const b64content = await readFile(image.filePath, { encoding: 'base64' });
     const mediaData = await this.twit.post('media/upload', {
       media_data: b64content,

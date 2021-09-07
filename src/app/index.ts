@@ -10,25 +10,25 @@ import {
 import { getLogger } from '@utils/logger';
 import { selectRandom } from '@utils/random';
 import { MobyGames } from 'src/mobygames';
-import { Game, GameFullInfo } from 'src/mobygames/game';
-import { Image, ImageInfo, imageInfoSorter } from 'src/mobygames/image';
+import { Game } from 'src/mobygames/game';
+import { Image, imageInfoSorter } from 'src/mobygames/image';
 import { PlatformGames } from 'src/mobygames/platform';
 import { Twitter } from 'src/twitter';
-
-interface AppOptions {
-  dry: boolean;
-  gameUrl?: string;
-}
+import { AppOptions, GameFullInfo, ImageInfo, Platform } from 'src/interfaces';
 
 const logger = getLogger('App');
 
 export class App {
   protected readonly dry: boolean;
   protected readonly gameUrl?: string;
+  protected readonly platform?: Platform;
+  protected readonly year?: number;
 
   constructor(options: AppOptions) {
     this.dry = options.dry;
     this.gameUrl = options.gameUrl;
+    this.platform = options.platform;
+    this.year = options.year;
   }
 
   /**
@@ -143,7 +143,7 @@ export class App {
    */
   public async run(): Promise<void> {
     const mg = new MobyGames();
-    const platform = new PlatformGames(mg.getRandomPlatform());
+    const platform = new PlatformGames(this.platform || mg.getRandomPlatform());
 
     const gameUrl = this.gameUrl || (await platform.getRandomGameUrl());
     if (!gameUrl) return;

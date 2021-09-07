@@ -2,23 +2,7 @@ import { default as cheerio, CheerioAPI } from 'cheerio';
 import { Element } from 'domhandler';
 import { getHref, getInnerText } from '@utils/parser';
 import { downloadHtml } from '@utils/download';
-import { ImageType } from '.';
-
-export type CoverArtType =
-  | 'front-cover'
-  | 'back-cover'
-  | 'side'
-  | 'media'
-  | 'manual'
-  | 'jewel-case-front'
-  | 'jewel-case-back'
-  | 'other';
-
-export interface CoverArtInfo {
-  url: string;
-  type: CoverArtType;
-  countries?: string[];
-}
+import { ImageType, CoverArtType } from 'src/interfaces';
 
 export class ImageList {
   protected static ImageSelectorByType: Record<ImageType, string> = {

@@ -1,9 +1,6 @@
 import { selectRandom } from '@utils/random';
+import { Platform } from 'src/interfaces';
 import { PLATFORM_NAMES } from './constants';
-
-export type Platform = keyof typeof PLATFORM_NAMES;
-
-export type ImageType = 'screenshot' | 'cover-art' | 'promo-art';
 
 export class MobyGames {
   public getPlatforms(): Platform[] {

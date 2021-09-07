@@ -2,7 +2,7 @@ import { default as cheerio, CheerioAPI, Element } from 'cheerio';
 import { downloadHtml } from '@utils/download';
 import { getHref, getInnerText } from '@utils/parser';
 import { getLogger } from '@utils/logger';
-import { GameFullInfo, Platform } from 'src/interfaces';
+import { GameFullInfo, Platform, ThumbnailInfo } from 'src/interfaces';
 import { PlatformGames } from './platform';
 import { ImageList } from './image-list';
 
@@ -35,6 +35,7 @@ export class Game {
     const $ = await this.load();
 
     const info: GameFullInfo = {
+      url: this.url,
       name: this.getName($),
       year: this.getReleaseYear($),
       platform: this.getPlatform($),
@@ -103,7 +104,7 @@ export class Game {
 
   protected async getCoverArtPageList(
     $: CheerioAPI
-  ): Promise<string[] | undefined> {
+  ): Promise<ThumbnailInfo[] | undefined> {
     const coverArtUrl = `${this.url}/cover-art`;
     const imageList = new ImageList(coverArtUrl);
     return imageList.getImagePageUrls();
@@ -111,7 +112,7 @@ export class Game {
 
   protected async getScreenshotPageUrlList(
     $: CheerioAPI
-  ): Promise<string[] | undefined> {
+  ): Promise<ThumbnailInfo[] | undefined> {
     const screenshotsUrl = `${this.url}/screenshots`;
     const imageList = new ImageList(screenshotsUrl);
     return imageList.getImagePageUrls();

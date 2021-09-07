@@ -98,10 +98,10 @@ export class PlatformGames {
     return paginationLinks.reduce((list, a) => {
       const url = getHref(a)!;
       const text = getInnerText(a);
-      const match = /(\d+)\s*-\s(\d+)/.exec(text);
+      const match = /(\d+)?\s*-\s(\d+)/.exec(text);
 
       if (match) {
-        const y0 = Number(match[1]);
+        const y0 = Number(match[1]) || new Date().getFullYear();
         const y1 = Number(match[2]);
         for (let year = Math.min(y0, y1); year <= Math.max(y0, y1); year++) {
           list[year] = url;

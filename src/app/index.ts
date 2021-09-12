@@ -55,30 +55,32 @@ export class App {
     const paths: string[] = [];
     const { coverArtImagePageUrls, screenshotsImagePageUrls } = game;
 
-    if (coverArtImagePageUrls) {
-      const frontCover = coverArtImagePageUrls.filter(
-        (cover) => cover.coverArtType === 'front-cover'
-      );
-      let selected = frontCover.length > 0 ? frontCover : coverArtImagePageUrls;
+    // Front Cover Images
+    // Because of `qualifies` we know there are front cover images
+    const frontCover = coverArtImagePageUrls!.filter(
+      (cover) => cover.coverArtType === 'front-cover'
+    );
+    let selected = frontCover;
 
-      if (GAME_PREFERRED_LANGS.length) {
-        const langImages = selected.filter((cover) =>
-          GAME_PREFERRED_LANGS.map((lang) => lang.toLowerCase()).some((lang) =>
-            cover.countries?.includes(lang)
-          )
-        );
-        if (langImages.length) {
-          selected = langImages;
-        }
-      }
-
-      paths.push(
-        ...selectRandom(selected, Math.min(IMAGES_COVER_ART, IMAGES_MAX)).map(
-          (info) => info.url
+    // Try to get the correct language, if possible
+    if (GAME_PREFERRED_LANGS.length) {
+      const langImages = selected.filter((cover) =>
+        GAME_PREFERRED_LANGS.map((lang) => lang.toLowerCase()).some((lang) =>
+          cover.countries?.includes(lang)
         )
       );
+      if (langImages.length) {
+        selected = langImages;
+      }
     }
 
+    paths.push(
+      ...selectRandom(selected, Math.min(IMAGES_COVER_ART, IMAGES_MAX)).map(
+        (info) => info.url
+      )
+    );
+
+    // Other screenshots
     paths.push(
       ...selectRandom(screenshotsImagePageUrls, IMAGES_MAX - paths.length).map(
         (info) => info.url
@@ -86,6 +88,33 @@ export class App {
     );
 
     return paths;
+  }
+
+  protected static qualifies(game: GameFullInfo): boolean {
+    const { coverArtImagePageUrls, screenshotsImagePageUrls } = game;
+
+    // a game without front-cover doesn't qualify
+    const frontCoversNum = coverArtImagePageUrls
+      ? coverArtImagePageUrls.filter(
+          (cover) => cover.coverArtType === 'front-cover'
+        ).length
+      : 0;
+
+    if (frontCoversNum < IMAGES_COVER_ART) {
+      logger.info(`Game doesn't qualifies: No front-cover found`);
+      return false;
+    }
+
+    // a game without enough images doesn't qualify either
+    if (
+      !screenshotsImagePageUrls ||
+      screenshotsImagePageUrls.length < IMAGES_MAX - IMAGES_COVER_ART
+    ) {
+      logger.info(`Game doesn't qualifies: Not enough images`);
+      return false;
+    }
+
+    return true;
   }
 
   protected static getTweetText(game: GameFullInfo): string {
@@ -163,12 +192,18 @@ export class App {
    */
   public async run(): Promise<void> {
     const mg = new MobyGames();
-    const platform = new PlatformGames(this.platform || mg.getRandomPlatform());
+    let gameInfo: GameFullInfo;
 
-    const gameUrl = this.gameUrl || (await platform.getRandomGameUrl());
-    if (!gameUrl) return;
-    const game = new Game(gameUrl);
-    const gameInfo = await game.getInfo();
+    do {
+      const platform = new PlatformGames(
+        this.platform || mg.getRandomPlatform()
+      );
+
+      const gameUrl = this.gameUrl || (await platform.getRandomGameUrl());
+      if (!gameUrl) return;
+      const game = new Game(gameUrl);
+      gameInfo = await game.getInfo();
+    } while (!App.qualifies(gameInfo));
 
     const imageUrls = App.chooseImages(gameInfo);
     const images = await App.downloadImages(imageUrls);

@@ -1,6 +1,6 @@
 {
   "name": "trg-tw-images",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Bot to upload screenshots of retro games using the twitter API",
   "scripts": {

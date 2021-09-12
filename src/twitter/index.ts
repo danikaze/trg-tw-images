@@ -69,8 +69,6 @@ export class Twitter {
   protected async tweet(data?: TweetData): Promise<void> {
     try {
       const res = await this.twit.post('statuses/update', data);
-      // eslint-disable-next-line no-console
-      console.log(res);
       const tweetId = (res.data as Twit.Twitter.Status).id_str;
       logger.info(
         `Tweeted: https://twitter.com/${this.accountName}/status/${tweetId}`

@@ -28,9 +28,8 @@ export const IMAGES_INCLUDE_ALT = false;
 
 /**
  * Minimum number of platforms to fit in the tweet before showing the
- * "Other platforms" section (0 = no limit)
  */
-export const OTHER_PLATFORMS_MIN = 0;
+export const OTHER_PLATFORMS_MIN = 1;
 /**
  * Maximum number of platforms to fit in the tweet (0 = no limit)
  * (limited by `TWEET_MAX_LENGTH` anyways)

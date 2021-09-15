@@ -125,7 +125,8 @@ export class App {
           ? ''
           : game.year && game.platform
           ? `${PlatformGames.getName(game.platform)} (${game.year})`
-          : String(game.year) || PlatformGames.getName(game.platform!);
+          : (game.year && String(game.year)) ||
+            PlatformGames.getName(game.platform!);
 
       return line ? ` ※ ${line}` : '';
     })();

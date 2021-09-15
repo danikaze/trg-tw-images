@@ -58,7 +58,7 @@ export class Game {
     const releaseElem = Game.getCoreGameInfo($, 'Released');
     if (!releaseElem) return;
     const date = getInnerText(releaseElem);
-    const match = /(19\d\d)/.exec(date);
+    const match = /([12]\d\d\d)/.exec(date);
     if (!match) return;
     return Number(match[1]);
   }

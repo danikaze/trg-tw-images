@@ -1,6 +1,8 @@
 /*
  * Data from constants.js
  */
+declare const NO_REPEAT_GAMES: number;
+declare const NO_REPEAT_GAMES_PATH: string;
 
 /*
  * Data from secrets.js

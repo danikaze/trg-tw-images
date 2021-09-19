@@ -52,12 +52,12 @@ export class Twitter {
   public async tweetImages(
     text: string,
     images: TwitterImageInfo[]
-  ): Promise<void> {
+  ): Promise<string | undefined> {
     const media_ids = await Promise.all(
       images.map((image) => this.uploadImage(image))
     );
 
-    await this.tweet({
+    return this.tweet({
       status: text,
       media_ids,
     });
@@ -66,13 +66,13 @@ export class Twitter {
   /**
    * Generic tweet method
    */
-  protected async tweet(data?: TweetData): Promise<void> {
+  protected async tweet(data?: TweetData): Promise<string | undefined> {
     try {
       const res = await this.twit.post('statuses/update', data);
       const tweetId = (res.data as Twit.Twitter.Status).id_str;
-      logger.info(
-        `Tweeted: https://twitter.com/${this.accountName}/status/${tweetId}`
-      );
+      const tweetUrl = `https://twitter.com/${this.accountName}/status/${tweetId}`;
+      logger.info(`Tweeted: ${tweetUrl}`);
+      return tweetUrl;
     } catch (e) {
       // eslint-disable-next-line no-console
       logger.error(e);

@@ -16,6 +16,7 @@ import { Image, imageInfoSorter } from 'src/mobygames/image';
 import { PlatformGames } from 'src/mobygames/platform';
 import { Twitter } from 'src/twitter';
 import { AppOptions, GameFullInfo, ImageInfo, Platform } from 'src/interfaces';
+import { TweetTracker } from 'src/tweet-tracker';
 
 const logger = getLogger('App');
 
@@ -193,24 +194,39 @@ export class App {
    */
   public async run(): Promise<void> {
     const mg = new MobyGames();
-    let gameInfo: GameFullInfo;
+    const tracker = new TweetTracker();
+    let gameInfo: GameFullInfo | undefined;
+    let gameUrl: string | undefined;
 
     do {
       const platform = new PlatformGames(
         this.platform || mg.getRandomPlatform()
       );
 
-      const gameUrl = this.gameUrl || (await platform.getRandomGameUrl());
-      if (!gameUrl) return;
+      gameUrl = this.gameUrl || (await platform.getRandomGameUrl());
+      if (!gameUrl) continue;
       const game = new Game(gameUrl);
       gameInfo = await game.getInfo();
-    } while (!App.qualifies(gameInfo));
+    } while (
+      !gameInfo ||
+      !gameUrl ||
+      !App.qualifies(gameInfo) ||
+      tracker.gameExists(gameUrl)
+    );
 
     const imageUrls = App.chooseImages(gameInfo);
     const images = await App.downloadImages(imageUrls);
     images.sort(imageInfoSorter);
 
-    await this.tweet(gameInfo, images);
+    const tweetUrl = await this.tweet(gameInfo, images);
+    if (tweetUrl) {
+      tracker.addGame({
+        gameName: gameInfo.name,
+        gameUrl,
+        tweetUrl,
+        date: new Date().toString(),
+      });
+    }
 
     await App.clean(images);
   }
@@ -223,7 +239,7 @@ export class App {
   protected async tweet(
     game: GameFullInfo,
     images: ImageInfo[]
-  ): Promise<boolean> {
+  ): Promise<string | undefined> {
     const text = App.getTweetText(game);
 
     logger.info(
@@ -238,15 +254,14 @@ export class App {
       )
     );
 
-    if (this.dry) return false;
-    if (images.length === 0) return false;
+    if (this.dry) return;
+    if (images.length === 0) return;
 
     try {
       const twitter = new Twitter(TWITTER_ACCOUNT_NAME);
-      await twitter.tweetImages(text, images);
-      return true;
+      return twitter.tweetImages(text, images);
     } catch (e) {
-      return false;
+      return;
     }
   }
 }

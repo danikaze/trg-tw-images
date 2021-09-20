@@ -38,7 +38,7 @@ export const PLATFORM_NAMES = {
   'gameboy-color': 'Game Boy Color',
   'game-gear': 'Game Gear',
   gamecube: 'GameCube',
-  genesis: 'Genesis',
+  genesis: 'SEGA Mega Drive',
   intellivision: 'Intellivision',
   j2me: 'J2ME',
   linux: 'Linux',

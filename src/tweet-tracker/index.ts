@@ -7,7 +7,7 @@ import { createJsonDb, JsonDb } from 'src/json-db';
 const logger = getLogger('GameTracker');
 
 export interface TrackerInfo {
-  key: string; // Game['source'] + Game['id'];
+  key: string; // Game['source'] + Game['id'] + Game['platform'];
   gameName: Game['title'];
   tweetUrl: string;
   date: string;
@@ -36,7 +36,7 @@ export class TweetTracker {
   }
 
   protected static getKey(game: Game): TrackerInfo['key'] {
-    return `${game.source}:${game.id}`;
+    return `${game.source}:${game.id}:${game.platform}`;
   }
 
   protected static getInfo(game: Game, tweetUrl: string): TrackerInfo {

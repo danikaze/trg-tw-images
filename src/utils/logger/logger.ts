@@ -36,7 +36,7 @@ export class Logger {
       console: !IS_PRODUCTION,
       disableColors: false,
       addTimestamp: true,
-      outputFolder: 'logs',
+      outputFolder: process.env.PATH_LOGS_FOLDER || 'logs',
       outputFile: '%DATE%.log',
       maxFiles: 30,
       ...options,

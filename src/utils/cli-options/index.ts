@@ -1,12 +1,19 @@
-import { PLATFORMS } from '@utils/constants';
 import { AppOptions } from 'src/apps/tweet-game';
 import { PLATFORM_NAMES } from 'src/game-source/constants/platform';
-import { PlatformType } from 'src/game-source/types';
+import {
+  GameSourceType,
+  GAME_SOURCE_TYPES,
+  PlatformType,
+} from 'src/game-source/types';
 import { LoggerLevel, LoggerOptions } from '../logger';
+import {
+  DEFAULT_GAME_YEAR_MAX,
+  DEFAULT_GAME_YEAR_MIN,
+  DEFAULT_PLATFORMS,
+} from './defaults';
 import { getString, getFlag, getBool, getNumber } from './helpers';
 
 export type CliOptions = AppOptions & {
-  reset: boolean;
   logSilent: boolean;
   logConsole: boolean;
   logFile: boolean;
@@ -40,12 +47,18 @@ function getOptions(): CliOptions {
     }
   });
 
+  const gameSource = getString('gamesource', 'mobygames') as GameSourceType;
+  if (!GAME_SOURCE_TYPES.includes(gameSource)) {
+    throw new Error(`Wrong gameSource "${gameSource}"`);
+  }
+
   return {
+    gameSource,
     dry: getFlag('dry', false),
     gameId: getString('gameId', ''),
     platforms: platforms?.length ? platforms : undefined,
-    year: getNumber('year', 0),
-    reset: getFlag('reset', false),
+    minYear: getNumber('year', getNumber('minYear', DEFAULT_GAME_YEAR_MIN)),
+    maxYear: getNumber('year', getNumber('maxYear', DEFAULT_GAME_YEAR_MAX)),
     skipCleaning: getFlag('skipCleaning', false),
     logSilent: getFlag('log.silent', false),
     logConsole: getBool('log.console', true),

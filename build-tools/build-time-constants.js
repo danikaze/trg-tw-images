@@ -4,13 +4,10 @@
  */
 const { DefinePlugin } = require('webpack');
 const { join } = require('path');
-const { existsSync } = require('fs');
 const packageJson = require('../package.json');
 const getGitData = require('./git');
 
 module.exports = { getBuildTimeConstantsPlugins };
-
-const CONSTANTS_PATH = join(__dirname, '../build-time-constants');
 
 /**
  * @param buildData { dev: boolean, isTest: boolean }
@@ -27,22 +24,16 @@ function getBuildTimeConstantsPlugins(prod) {
 
 function getConstants(prod) {
   const gitData = getGitData();
-  const constants = getFiles().reduce(
-    (res, filePath) => {
-      const fileData = require(filePath);
-      return { ...res, ...fileData };
-    },
-    {
-      IS_PRODUCTION: prod,
-      PACKAGE_NAME: packageJson.name,
-      PACKAGE_VERSION: packageJson.version,
-      COMMIT_HASH: gitData.rev,
-      COMMIT_HASH_SHORT: gitData.shortRev,
-      PROJECT_ROOT: join(__dirname, '..'),
-    }
-  );
+  const constants = {
+    IS_PRODUCTION: prod,
+    PACKAGE_NAME: packageJson.name,
+    PACKAGE_VERSION: packageJson.version,
+    COMMIT_HASH: gitData.rev,
+    COMMIT_HASH_SHORT: gitData.shortRev,
+    PROJECT_ROOT: join(__dirname, '..'),
+  };
 
-  if (process.env.PRINT_CONSTANTS === 'true') {
+  if (process.env.PRINT_BUILD_CONSTANTS === 'true') {
     printConstants(constants);
   }
 
@@ -54,23 +45,6 @@ function stringify(data) {
     res[key] = JSON.stringify(value);
     return res;
   }, {});
-}
-
-function getFiles() {
-  const files = ['constants', 'secrets'];
-  const folders = (process.env.CONSTANTS_SUBFOLDERS || 'data')
-    .split(',')
-    .map((f) => join(CONSTANTS_PATH, f.trim()));
-
-  return folders.reduce(
-    (allFiles, folder) =>
-      allFiles.concat(
-        files
-          .map((file) => join(folder, `${file}.js`))
-          .filter((file) => existsSync(file))
-      ),
-    []
-  );
 }
 
 function printConstants(constants) {

@@ -1,3 +1,13 @@
+/*
+ * Constants defined in webpack at build time
+ */
+declare const IS_PRODUCTION: boolean;
+declare const PACKAGE_NAME: string;
+declare const PACKAGE_VERSION: string;
+declare const COMMIT_HASH: string;
+declare const COMMIT_HASH_SHORT: string;
+declare const PROJECT_ROOT: string;
+
 type DeepPartial<T> = T extends Record<string, unknown>
   ? {
       [P in keyof T]?: DeepPartial<T[P]>;

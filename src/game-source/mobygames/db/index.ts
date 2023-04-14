@@ -1,9 +1,9 @@
 import { join } from 'path';
-import { PATH_DATA_FOLDER } from '@utils/constants';
+import { envVars } from 'src/apps/tweet-game/utils/env-vars';
 import { createJsonDb } from 'src/json-db';
 import { GamesDb, PlatformsDb } from './types';
 
-const MOBYGAMES_DATA_FOLDER = join(PATH_DATA_FOLDER, 'mobygames');
+const MOBYGAMES_DATA_FOLDER = join(envVars.PATH_DATA_FOLDER, 'mobygames');
 const PLATFORMS_DB_FILE = join(MOBYGAMES_DATA_FOLDER, 'platforms.json');
 const GAMES_DB_FILE = join(MOBYGAMES_DATA_FOLDER, 'games.json');
 

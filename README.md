@@ -2,20 +2,46 @@
 
 Bot to upload screenshots of retro games using the twitter API
 
+## Environment variables
+
+### App
+
+| envvar                        | Required | Description                                            |
+| ----------------------------- | -------- | ------------------------------------------------------ |
+| `PRINT_BUILD_CONSTANTS`       |          | When `true`, it will print the webpack build constants |
+| `TWITTER_ACCOUNT_NAME`        | ✔        | Name of the @twitter account (without `@`)             |
+| `TWITTER_API_KEY`             | ✔        |
+| `TWITTER_API_KEY_SECRET`      | ✔        |
+| `TWITTER_ACCESS_TOKEN`        | ✔        |
+| `TWITTER_ACCESS_TOKEN_SECRET` | ✔        |
+| `PATH_TEMP_FOLDER`            |          |
+| `PATH_DATA_FOLDER`            |          |
+
+### MobyGames
+
+| envvar                     | Required | Default | Description                                            |
+| -------------------------- | -------- | ------- | ------------------------------------------------------ |
+| `MG_API_KEY`               | ✔        |         |
+| `MG_GAMES_UPDATES_PER_RUN` |          | `500`   | Number of games to fetch into the database in each run |
+
+## cli parameters
+
 Can be run with the following parameters:
 
-| Parameter        | Default | Type                                                           | Description                                                                                     |
-| ---------------- | ------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `--dry`          | `false` | _flag_                                                         | When `true` it will not send the tweet                                                          |
-| `--gameId`       |         | `string` \| `number`                                           | When specified will tweet about that game                                                       |
-| `--platforms`    |         | [PlatformType](./src/game-source/base/platform/constants.ts)[] | When specified will not use a random platform. Array (list) specified by a comma separated list |
-| `--year`         |         | `number`                                                       | When specified will tweet a game of this year                                                   |
-| `--reset`        | `false` | _flag_                                                         | If `true`, will clear the database                                                              |
-| `--skipCleaning` | `false` | _flag_                                                         | When specified, images used for the tweet won't be deleted                                      |
-| `--log.silent`   | `false` | _flag_                                                         | If `true`, will not log anything                                                                |
-| `--log.console`  | `true`  | `boolean`                                                      | When `false`, will not log into the console                                                     |
-| `--log.file`     | `true`  | `boolean`                                                      | When `false`, will not log into the logfile                                                     |
-| `--log.level`    | `info`  | [LoggerLevel](./src/utils/logger/index.ts)                     | Minimum level of the messages to log                                                            |
+| Parameter        | Default     | Type                                                           | Description                                                                                     |
+| ---------------- | ----------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `--gameSource`   | `mobygames` | [GameSourceType](./src/game-source/types.ts)                   | Source for the games to use                                                                     |
+| `--dry`          | `false`     | _flag_                                                         | When `true` it will not send the tweet                                                          |
+| `--gameId`       |             | `string` \| `number`                                           | When specified will tweet about that game                                                       |
+| `--platforms`    |             | [PlatformType](./src/game-source/base/platform/constants.ts)[] | When specified will not use a random platform. Array (list) specified by a comma separated list |
+| `--year`         |             | `number`                                                       | When specified will tweet a game of this year (and override `minYear` and `maxYear`)            |
+| `--minYear`      | `1970`      | `number`                                                       | No game before this year will be chosen                                                         |
+| `--maxYear`      | `1998`      | `number`                                                       | No game after this year will be chosen                                                          |
+| `--skipCleaning` | `false`     | _flag_                                                         | When specified, images used for the tweet won't be deleted                                      |
+| `--log.silent`   | `false`     | _flag_                                                         | If `true`, will not log anything                                                                |
+| `--log.console`  | `true`      | `boolean`                                                      | When `false`, will not log into the console                                                     |
+| `--log.file`     | `true`      | `boolean`                                                      | When `false`, will not log into the logfile                                                     |
+| `--log.level`    | `info`      | [LoggerLevel](./src/utils/logger/index.ts)                     | Minimum level of the messages to log                                                            |
 
 **Note 1**: All parameters are specified as `--NAME=VALUE` (not separated by spaces, nor single-dash flags, etc.), except **flags** that are `true` when present and `false` when not (i.e. `--skipCleaning`).
 

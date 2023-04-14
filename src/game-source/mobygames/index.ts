@@ -18,11 +18,13 @@ import { gamesDb, platformDb } from './db';
 import { logger } from './utils/logger';
 import { getCoverArtType } from './utils/cover-art';
 import { getDateDetails } from './utils/date';
+import { envVars } from './utils/env-vars';
 
-// eslint-disable-next-line no-magic-numbers
+/* eslint-disable no-magic-numbers */
 const PLATFORM_DB_TTL = 7 * 86400 * 1000;
 const API_CALLS_NEEDED = 5;
-const MAX_UPDATED_GAMES_PER_RUN = 200;
+const MAX_UPDATED_GAMES_PER_RUN = envVars.MG_GAMES_UPDATES_PER_RUN || 500;
+/* eslint-enable no-magic-numbers */
 
 export class MobyGamesGameSource extends GameSource {
   constructor() {

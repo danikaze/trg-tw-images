@@ -5,6 +5,7 @@ import { default as Twit } from 'twit';
 import { IMAGES_INCLUDE_ALT } from '@utils/constants';
 import { getLogger } from '@utils/logger';
 import { gif2png } from '@utils/gif-to-png';
+import { envVars } from 'src/apps/tweet-game/utils/env-vars';
 
 const readFile = promisify(rf);
 const logger = getLogger('Twitter');
@@ -37,12 +38,12 @@ export class Twitter {
 
   constructor(accountName: string) {
     this.accountName =
-      accountName[0] === '@' ? accountName.substr(1) : accountName;
+      accountName[0] === '@' ? accountName.substring(1) : accountName;
     this.twit = new Twit({
-      consumer_key: TWITTER_API_KEY,
-      consumer_secret: TWITTER_API_KEY_SECRET,
-      access_token: TWITTER_ACCESS_TOKEN,
-      access_token_secret: TWITTER_ACCESS_TOKEN_SECRET,
+      consumer_key: envVars.TWITTER_API_KEY!,
+      consumer_secret: envVars.TWITTER_API_KEY_SECRET!,
+      access_token: envVars.TWITTER_ACCESS_TOKEN!,
+      access_token_secret: envVars.TWITTER_ACCESS_TOKEN_SECRET!,
     });
   }
 

@@ -4,6 +4,7 @@ import { logger } from './logger';
 import { isError } from '../api';
 import { ApiErrorCode } from '../api/other-types';
 import { ApiError } from '../api/response-types';
+import { envVars } from './env-vars';
 
 /**
  * Provides information about the Mobygames API usage
@@ -58,14 +59,6 @@ const queue: QueueItem[] = [];
 let processing = false;
 /** Next item to process */
 let queueIndex = 0;
-/** api key */
-const API_KEY = (() => {
-  try {
-    return API_KEY_MOBYGAMES;
-  } catch {
-    throw new Error(`API_KEY_MOBYGAMES is not defined`);
-  }
-})();
 
 async function startProcessing(): Promise<void> {
   if (processing) return;
@@ -113,7 +106,7 @@ async function startProcessing(): Promise<void> {
 
 async function doApiCall<Data>(rest: string): Promise<Data> {
   const url = new URL(BASE_URL + rest);
-  url.searchParams.set('api_key', API_KEY);
+  url.searchParams.set('api_key', envVars.MG_API_KEY);
 
   const res = await fetch(url.href);
   const json = (await res.json()) as Data | ApiError;

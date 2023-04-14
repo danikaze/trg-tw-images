@@ -80,7 +80,7 @@ module.exports = {
       {
         ignorePattern:
           '(^import )|(new RegExp)|(^\\s*it\\()|( = \\/|https?:\\/\\/)|(^ \\* \\|)',
-        code: 80,
+        code: 100,
       },
     ],
     'no-array-constructor': 'error',

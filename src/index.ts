@@ -1,7 +1,6 @@
 import { getCliOptions } from '@utils/cli-options';
 import { getLogger } from '@utils/logger';
-import { App } from './app';
-import { db } from './db';
+import { App } from './apps/tweet-game';
 
 const logger = getLogger();
 
@@ -17,7 +16,6 @@ async function run(): Promise<void> {
         2
       )}`
     );
-    db.load();
     const app = new App(cliOptions);
     await app.run();
   } catch (error) {

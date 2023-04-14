@@ -1,5 +1,5 @@
 import { extname, join } from 'path';
-import { PATH_TEMP_FOLDER } from './constants';
+import { envVars } from 'src/apps/tweet-game/utils/env-vars';
 
 export function getTempFilePath(
   from: string,
@@ -16,5 +16,5 @@ export function getTempFilePath(
     .filter(Boolean)
     .join('.');
 
-  return join(PATH_TEMP_FOLDER, `${filename}${ext}`);
+  return join(envVars.PATH_TEMP_FOLDER, `${filename}${ext}`);
 }

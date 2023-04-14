@@ -14,6 +14,7 @@ import {
 } from 'src/game-source/types';
 import { TweetTracker } from 'src/tweet-tracker';
 import { Twitter, TwitterImageInfo } from 'src/twitter';
+import { envVars } from './utils/env-vars';
 import { gameQualifies } from './utils/game-qualifies';
 import { getTweetText } from './utils/get-tweet-text';
 
@@ -24,7 +25,8 @@ export interface AppOptions {
   /** When true, it will not send the tweet */
   dry?: boolean;
   platforms?: PlatformType[];
-  year?: number;
+  minYear?: number;
+  maxYear?: number;
 }
 
 const logger = getLogger('App');
@@ -93,14 +95,12 @@ export class App {
       );
     }
 
-    const options: GetRandomGameOptions = {};
-    if (this.options.platforms) {
-      options.platforms = this.options.platforms;
-    }
-    if (this.options.year) {
-      options.maxYear = this.options.year;
-      options.minYear = this.options.year;
-    }
+    const options: GetRandomGameOptions = {
+      platforms: this.options.platforms,
+      minYear: this.options.minYear,
+      maxYear: this.options.maxYear,
+    };
+
     return this.gameSource.getRandomGame(options);
   }
 
@@ -180,7 +180,7 @@ export class App {
     }
 
     try {
-      const twitter = new Twitter(TWITTER_ACCOUNT_NAME);
+      const twitter = new Twitter(envVars.TWITTER_ACCOUNT_NAME!);
       return twitter.tweetImages(text, images);
     } catch (e) {
       return;

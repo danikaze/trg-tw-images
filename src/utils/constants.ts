@@ -1,18 +1,3 @@
-import { join } from 'path';
-import { PlatformType } from 'src/game-source/types';
-
-export const PATH_TEMP_FOLDER = join(__dirname, 'temp');
-export const PATH_DATA_FOLDER = join(__dirname, 'data');
-
-/**
- * No game before this year will be chosen
- */
-export const GAME_YEAR_MIN = 1970;
-/**
- * No game after this year will be chosen
- */
-export const GAME_YEAR_MAX = 1998;
-
 /**
  * Minimum number of Front Covers that a game must have to be eligible
  */
@@ -59,23 +44,3 @@ export const GAME_PREFERRED_LANGS = [
   'United States',
   'United Kingdom',
 ];
-
-/**
- * Choose games from the following platforms only
- */
-export const PLATFORMS = (() => {
-  const list: PlatformType[] = [
-    'amiga',
-    'dos',
-    'gameboy',
-    'gameboy-color',
-    'game-gear',
-    'nes',
-    'pc88',
-    'sega-cd',
-    'sega-master-system',
-    'sega-saturn',
-    'snes',
-  ];
-  return list.join(',');
-})();

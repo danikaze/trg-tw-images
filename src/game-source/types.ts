@@ -1,6 +1,8 @@
 import { PLATFORM_NAMES } from './constants/platform';
 
-export type GameSourceType = 'mobygames';
+export const GAME_SOURCE_TYPES = ['mobygames'] as const;
+
+export type GameSourceType = typeof GAME_SOURCE_TYPES[number];
 
 export type PlatformType = keyof typeof PLATFORM_NAMES;
 

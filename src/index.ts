@@ -4,10 +4,14 @@ import { App } from './apps/tweet-game';
 
 const logger = getLogger();
 
+/**
+ * Entry point for the application
+ */
 async function run(): Promise<void> {
+  logger.info('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓');
+
   const cliOptions = getCliOptions();
 
-  logger.info('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓');
   try {
     logger.info(
       `Starting (v${PACKAGE_VERSION}). cli-options: ${JSON.stringify(

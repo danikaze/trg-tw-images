@@ -98,10 +98,14 @@ export interface NsLogger {
 
 export const getLogger = (() => {
   const cliOptions = getCliOptions();
-  const logger = new Logger({
+  const loggerOptions: LoggerOptions = {
     level: cliOptions.logLevel,
     console: cliOptions.logConsole,
     silent: cliOptions.logSilent,
-  });
+  };
+  if (!cliOptions.logFile) {
+    loggerOptions.outputFile = undefined;
+  }
+  const logger = new Logger(loggerOptions);
   return logger.getLogger.bind(logger);
 })();

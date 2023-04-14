@@ -1,20 +1,27 @@
 import { join } from 'path';
+import { PlatformType } from 'src/game-source/types';
 
 export const PATH_TEMP_FOLDER = join(__dirname, 'temp');
+export const PATH_DATA_FOLDER = join(__dirname, 'data');
 
 /**
- * No game older than this will be chosen
+ * No game before this year will be chosen
  */
-export const GAME_YEAR_MIN = 1900;
+export const GAME_YEAR_MIN = 1970;
 /**
- * No game younger than this will be chosen
+ * No game after this year will be chosen
  */
 export const GAME_YEAR_MAX = 1998;
 
 /**
- * Number of Cover Art images to include
+ * Minimum number of Front Covers that a game must have to be eligible
  */
-export const IMAGES_COVER_ART = 1;
+export const IMAGES_FRONT_COVER_MIN = 1;
+/**
+ * Minimum number of images in total to include in a tweet
+ * for a game to be eligible (covers + screenshots)
+ */
+export const IMAGES_MIN = 3;
 /**
  * Maximum number of images to include in a tweet
  * (to be filled with screenshots)
@@ -42,12 +49,33 @@ export const OTHER_PLATFORMS_MAX = 0;
 export const TWEET_MAX_LENGTH = 280;
 
 /**
- * Delete images after tweeting them or not
+ * When selecting game information, it will try to select elements based on
+ * this setting when available, using images ordered by this languages/countries
  */
-export const DELETE_IMAGES = false;
+export const GAME_PREFERRED_LANGS = [
+  'Spain',
+  'Worldwide',
+  'Japan',
+  'United States',
+  'United Kingdom',
+];
 
 /**
- * When selecting game information, it will try to select elements based on
- * this setting when available
+ * Choose games from the following platforms only
  */
-export const GAME_PREFERRED_LANGS = ['Spain'];
+export const PLATFORMS = (() => {
+  const list: PlatformType[] = [
+    'amiga',
+    'dos',
+    'gameboy',
+    'gameboy-color',
+    'game-gear',
+    'nes',
+    'pc88',
+    'sega-cd',
+    'sega-master-system',
+    'sega-saturn',
+    'snes',
+  ];
+  return list.join(',');
+})();

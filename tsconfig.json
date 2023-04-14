@@ -21,7 +21,8 @@
   "include": [
     "build-time-constants/build.d.ts",
     "build-time-constants/constants.d.ts",
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "./global.d.ts"
   ],
   "exclude": ["node_modules"]
 }

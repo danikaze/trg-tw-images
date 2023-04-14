@@ -12,3 +12,5 @@ declare const TWITTER_API_KEY: string;
 declare const TWITTER_API_KEY_SECRET: string;
 declare const TWITTER_ACCESS_TOKEN: string;
 declare const TWITTER_ACCESS_TOKEN_SECRET: string;
+
+declare const API_KEY_MOBYGAMES: string;

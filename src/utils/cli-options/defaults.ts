@@ -38,6 +38,7 @@ export const DEFAULT_PLATFORMS = (() => {
     'Neo Geo Pocket',
     'Neo Geo Pocket Color',
     'Neo Geo X',
+    'psx',
   ];
   return list.join(',');
 })();

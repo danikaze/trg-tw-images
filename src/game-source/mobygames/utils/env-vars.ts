@@ -20,7 +20,7 @@ export const envVars: MobyGamesEnvVars = (() => {
 
   const missing = requiredEnvVars
     .filter((name) => vars[name] === undefined)
-    .map(([name]) => ` - process.env.${name}`);
+    .map((name) => ` - process.env.${name}`);
 
   if (missing.length > 0) {
     logger.error(
@@ -33,7 +33,7 @@ export const envVars: MobyGamesEnvVars = (() => {
 
   const notNumeric = numericEnvVars
     .filter((name) => vars[name] !== undefined && isNaN(Number(vars[name])))
-    .map(([name]) => ` - process.env.${name}`);
+    .map((name) => ` - process.env.${name}`);
 
   if (notNumeric.length > 0) {
     logger.error(

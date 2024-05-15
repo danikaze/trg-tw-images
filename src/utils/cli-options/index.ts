@@ -18,11 +18,18 @@ export type CliOptions = AppOptions & {
   logConsole: boolean;
   logFile: boolean;
   logLevel: LoggerOptions['level'];
+  /** When true, it will ask for user and password interactively */
+  interactiveUser?: boolean;
 };
 
-export function getCliOptions() {
+let cachedOptions: CliOptions | undefined;
+
+export function getCliOptions(): CliOptions {
+  if (cachedOptions) return cachedOptions;
+
   try {
-    return getOptions();
+    cachedOptions = getOptions();
+    return cachedOptions;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(String(error as Error));
@@ -54,6 +61,7 @@ function getOptions(): CliOptions {
 
   return {
     gameSource,
+    interactiveUser: getFlag('u', false),
     dry: getFlag('dry', false),
     gameId: getString('gameId', ''),
     platforms: platforms?.length ? platforms : undefined,

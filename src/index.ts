@@ -1,6 +1,8 @@
-import { getCliOptions } from '@utils/cli-options';
+import { CliOptions, getCliOptions } from '@utils/cli-options';
 import { getLogger } from '@utils/logger';
-import { App } from './apps/tweet-game';
+import { interactiveMode } from './apps/tweet-game/utils/interactive-mode';
+
+import type { App } from './apps/tweet-game';
 
 const logger = getLogger();
 
@@ -12,6 +14,12 @@ async function run(): Promise<void> {
 
   const cliOptions = getCliOptions();
 
+  if (cliOptions.interactiveUser) {
+    const input = await interactiveMode();
+    process.env.TWITTER_ACCOUNT_NAME = input.username;
+    process.env.TWITTER_ACCOUNT_PASS = input.password;
+  }
+
   try {
     logger.info(
       `Starting (v${PACKAGE_VERSION}). cli-options: ${JSON.stringify(
@@ -20,12 +28,24 @@ async function run(): Promise<void> {
         2
       )}`
     );
-    const app = new App(cliOptions);
-    await app.run();
+    await runApp(cliOptions);
   } catch (error) {
     logger.error('Unexpected error:', (error as Error).stack);
   }
   logger.info('↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑\n');
+}
+
+/**
+ * Run the App
+ * Encapsulated to avoid importing the tweet-game app (that uses envvar) before
+ * the cliOptions are read to inject the username and password in process.env
+ */
+async function runApp(cliOptions: CliOptions): Promise<void> {
+  const AppClass = await require('./apps/tweet-game').then(
+    (mod: { App: typeof App }) => mod.App
+  );
+  const app = new AppClass(cliOptions);
+  return app.run();
 }
 
 run();

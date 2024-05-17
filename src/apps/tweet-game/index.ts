@@ -13,7 +13,8 @@ import {
   PlatformType,
 } from 'src/game-source/types';
 import { TweetTracker } from 'src/tweet-tracker';
-import { Twitter, TwitterImageInfo } from 'src/twitter';
+import { TwitterImageInfo } from 'src/twitter';
+import { TwitterPuppeteer } from 'src/twitter/puppeteer';
 import { envVars } from './utils/env-vars';
 import { gameQualifies } from './utils/game-qualifies';
 import { getTweetText } from './utils/get-tweet-text';
@@ -27,6 +28,8 @@ export interface AppOptions {
   platforms?: PlatformType[];
   minYear?: number;
   maxYear?: number;
+  /** When true, it will open puppeteer UI */
+  ui?: boolean;
 }
 
 const logger = getLogger('App');
@@ -51,6 +54,13 @@ export class App {
    * Automatically queue a tweet with images about a random game
    */
   public async run(): Promise<void> {
+    const twitter = new TwitterPuppeteer({
+      username: envVars.TWITTER_ACCOUNT_NAME,
+      password: envVars.TWITTER_ACCOUNT_PASS,
+      ui: this.options.ui,
+    });
+    twitter.tweet({ text: 'test', images: [] });
+    return;
     // we don't want to keep getting the same information over and over again
     // if there's a pre-specified expected result
     const maxTries =
@@ -169,22 +179,22 @@ export class App {
       )
     );
 
-    if (this.options.dry) {
-      logger.debug(`Exiting due to --dry flag`);
-      return;
-    }
-
     if (images.length === 0) {
       logger.error(`No images to tweet`);
       return;
     }
 
-    try {
-      const twitter = new Twitter(envVars.TWITTER_ACCOUNT_NAME!);
-      return twitter.tweetImages(text, images);
-    } catch (e) {
+    if (this.options.dry) {
+      logger.debug(`Exiting due to --dry flag`);
       return;
     }
+
+    const twitter = new TwitterPuppeteer({
+      username: envVars.TWITTER_ACCOUNT_NAME,
+      password: envVars.TWITTER_ACCOUNT_PASS,
+      ui: this.options.ui,
+    });
+    twitter.tweet({ text, images });
   }
 
   /**

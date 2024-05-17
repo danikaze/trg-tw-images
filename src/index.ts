@@ -48,7 +48,29 @@ async function runApp(cliOptions: CliOptions): Promise<void> {
   return app.run();
 }
 
+async function testPup(): Promise<void> {
+  const puppeteer = require('puppeteer-extra');
+  const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+  const AnonUaPlugin = require('puppeteer-extra-plugin-anonymize-ua');
+
+  puppeteer.use(StealthPlugin());
+  puppeteer.use(AnonUaPlugin());
+
+  const browser = await puppeteer.launch({
+    headless: false,
+  });
+  const emptyPages = (await browser.pages()).filter(
+    (page) => page.url() === 'about:blank'
+  );
+  const page = emptyPages[0] ?? (await browser.newPage());
+  await page.setViewport({ width: 1400, height: 800 });
+
+  // await page.goto('https://bot.sannysoft.com/');
+  await page.goto('https://arh.antoinevastel.com/bots/areyouheadless');
+}
+
 run();
+// testPup();
 
 // empty export for --isolatedModules compiler options in the entry point
 export {};

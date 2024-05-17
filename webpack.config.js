@@ -66,6 +66,11 @@ module.exports = (env) => {
 
     externals: {
       sharp: 'commonjs sharp',
+      'puppeteer-extra': "require('puppeteer-extra')",
+      'puppeteer-extra-plugin-stealth':
+        "require('puppeteer-extra-plugin-stealth')",
+      'puppeteer-extra-plugin-anonymize-ua':
+        "require('puppeteer-extra-plugin-anonymize-ua')",
     },
   };
 };

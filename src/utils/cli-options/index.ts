@@ -61,6 +61,7 @@ function getOptions(): CliOptions {
 
   return {
     gameSource,
+    ui: getFlag('ui', false),
     interactiveUser: getFlag('u', false),
     dry: getFlag('dry', false),
     gameId: getString('gameId', ''),

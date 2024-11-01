@@ -1,8 +1,8 @@
 import { AppOptions } from 'src/apps/tweet-game';
 import { PLATFORM_NAMES } from 'src/game-source/constants/platform';
 import {
-  GameSourceType,
   GAME_SOURCE_TYPES,
+  GameSourceType,
   PlatformType,
 } from 'src/game-source/types';
 import { LoggerLevel, LoggerOptions } from '../logger';
@@ -11,9 +11,9 @@ import {
   DEFAULT_GAME_YEAR_MIN,
   DEFAULT_PLATFORMS,
 } from './defaults';
-import { getString, getFlag, getBool, getNumber } from './helpers';
+import { getBool, getFlag, getNumber, getString } from './helpers';
 
-export type CliOptions = AppOptions & {
+export type CliOptions = Omit<AppOptions, 'services'> & {
   logSilent: boolean;
   logConsole: boolean;
   logFile: boolean;

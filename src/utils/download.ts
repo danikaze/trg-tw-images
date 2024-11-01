@@ -38,7 +38,7 @@ async function downloadImage(
   options?: AxiosRequestConfig
 ): Promise<void> {
   const filePath = resolve(outputPath);
-  logger.debug(`Downloading image from ${url} to ${filePath}`);
+  logger.debug(`Downloading image from "${url}" to "${filePath}"`);
   mkdirp(dirname(filePath));
   const writer = createWriteStream(filePath);
   const res = await axios({

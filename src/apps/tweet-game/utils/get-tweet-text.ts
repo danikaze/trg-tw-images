@@ -1,19 +1,15 @@
-import {
-  OTHER_PLATFORMS_MAX,
-  OTHER_PLATFORMS_MIN,
-  TWEET_MAX_LENGTH,
-} from '@utils/constants';
+import { OTHER_PLATFORMS_MAX, OTHER_PLATFORMS_MIN } from '@utils/constants';
 import { getPlatformName } from 'src/game-source';
 import { Game } from 'src/game-source/types';
 
-export function getTweetText(game: Game): string {
+export function getTweetText(game: Game, maxChars: number): string {
   const line1 = getTitle(game);
   const line2 = getDescription(game);
 
-  const main = [line1, '\n', line2].filter((line) => !!line).join('\n');
+  const main = line1 && line2 ? `${line1}\n\n${line2}` : line1 || line2;
 
   // -1 for the "\n"
-  const other = getOtherPlatforms(game, TWEET_MAX_LENGTH - main.length - 1);
+  const other = getOtherPlatforms(game, maxChars - main.length - 1);
 
   return other ? [main, other].join('\n') : main;
 }

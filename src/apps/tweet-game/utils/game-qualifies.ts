@@ -4,7 +4,7 @@ import { CoverArtType, Game } from 'src/game-source/types';
 
 const logger = getLogger('App');
 
-export function gameQualifies(game: Game | undefined): boolean {
+export function gameQualifies(game: Game | undefined): game is Game {
   if (!game) return false;
 
   const { covers, screenshots } = game;

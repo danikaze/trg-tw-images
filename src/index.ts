@@ -1,6 +1,7 @@
 import { getCliOptions } from '@utils/cli-options';
 import { getLogger } from '@utils/logger';
 import { App } from './apps/tweet-game';
+import { getEnabledTweetServices } from './tweet-services/get';
 
 const logger = getLogger();
 
@@ -11,6 +12,7 @@ async function run(): Promise<void> {
   logger.info('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓');
 
   const cliOptions = getCliOptions();
+  const services = getEnabledTweetServices();
 
   try {
     logger.info(
@@ -20,7 +22,7 @@ async function run(): Promise<void> {
         `cli-options: ${JSON.stringify(cliOptions, null, 2)}`,
       ].join('\n')
     );
-    const app = new App(cliOptions);
+    const app = new App({ ...cliOptions, services });
     await app.run();
   } catch (error) {
     logger.error('Unexpected error:', (error as Error).stack);

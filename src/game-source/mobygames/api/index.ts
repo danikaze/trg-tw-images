@@ -1,5 +1,4 @@
 import {
-  ApiError,
   ApiGame,
   ApiGamePlatformsCovers,
   ApiGamePlatformsScreenshots,
@@ -19,10 +18,6 @@ import {
 export const MAX_CALLS_PER_HOUR = 360;
 export const MIN_MS_BETWEEN_CALLS = 1000;
 const DEFAULT_NEW_GAMES_QTY = 100;
-
-export function isError(data: unknown | ApiError): data is ApiError {
-  return (data as ApiError).error !== undefined;
-}
 
 export function getCalledTimes(): number {
   return getApiMeta().totalCalls;

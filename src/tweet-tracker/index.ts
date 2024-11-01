@@ -3,6 +3,7 @@ import { join } from 'path';
 import { envVars } from 'src/apps/tweet-game/utils/env-vars';
 import { Game } from 'src/game-source/types';
 import { createJsonDb, JsonDb } from 'src/json-db';
+import { TweetServiceType } from 'src/tweet-services';
 
 const logger = getLogger('GameTracker');
 
@@ -14,6 +15,7 @@ export interface TrackerInfo {
 }
 
 export interface TweetTrackerOptions {
+  service: TweetServiceType;
   length?: number;
   filePath?: string;
 }
@@ -22,10 +24,13 @@ export class TweetTracker {
   private readonly options: Required<TweetTrackerOptions>;
   private readonly db: JsonDb<{ lastTweets: TrackerInfo[] }>;
 
-  constructor(options?: TweetTrackerOptions) {
+  constructor(options: TweetTrackerOptions) {
     this.options = {
       length: 1000,
-      filePath: join(envVars.PATH_DATA_FOLDER, 'tweet-tracker.json'),
+      filePath: join(
+        envVars.PATH_DATA_FOLDER,
+        `tweet-tracker.${options.service}.json`
+      ),
       ...options,
     };
     this.db = createJsonDb(this.options.filePath, {
@@ -68,6 +73,6 @@ export class TweetTracker {
         Math.max(0, lastTweets.length - this.options.length)
       ),
     });
-    logger.info(`Game added: ${info}`);
+    logger.info(`Game added: ${JSON.stringify(info, null, 2)}`);
   }
 }

@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 import { delay } from '@utils/delay';
 import { logger } from './logger';
-import { isError } from '../api';
 import { ApiErrorCode } from '../api/other-types';
 import { ApiError } from '../api/response-types';
 import { envVars } from './env-vars';
@@ -14,6 +13,10 @@ export function getApiMeta() {
     totalCalls: queue.length,
     // totalCallsProcessed: queue.filter((i) => !!i.processTime).length,
   };
+}
+
+export function isError(data: unknown | ApiError): data is ApiError {
+  return (data as ApiError).error !== undefined;
 }
 
 /**
@@ -32,7 +35,7 @@ export function callApi<Data>(rest: string): Promise<Data> {
       resolve,
       reject,
     });
-    logger.debug(`Api call queued (${queue.length}): ${rest}`);
+    logger.debug(`Api call queued (${queue.length}): "${rest}"`);
     startProcessing();
   });
 }
@@ -93,7 +96,7 @@ async function startProcessing(): Promise<void> {
     }
 
     try {
-      logger.debug(`Api call: ${rest}`);
+      logger.debug(`Api call: "${rest}"`);
       requestData.processTime = processTime;
       const result = await doApiCall(rest);
       requestData.duration = Date.now() - processTime;

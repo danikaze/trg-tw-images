@@ -29,11 +29,6 @@ export const OTHER_PLATFORMS_MIN = 1;
 export const OTHER_PLATFORMS_MAX = 0;
 
 /**
- * Maximum number of characters of a tweet
- */
-export const TWEET_MAX_LENGTH = 280;
-
-/**
  * When selecting game information, it will try to select elements based on
  * this setting when available, using images ordered by this languages/countries
  */

@@ -1,19 +1,14 @@
-import { readFile as rf } from 'fs';
-import { promisify } from 'util';
+import { readFile } from 'fs/promises';
 import { extname } from 'path';
-import { default as Twit } from 'twit';
+import Twit from 'twit';
 import { IMAGES_INCLUDE_ALT } from '@utils/constants';
 import { getLogger } from '@utils/logger';
 import { gif2png } from '@utils/gif-to-png';
 import { envVars } from 'src/apps/tweet-game/utils/env-vars';
 
-const readFile = promisify(rf);
-const logger = getLogger('Twitter');
+import { TweetImageInfo, TweetService, TweetServiceType } from '..';
 
-export interface TwitterImageInfo {
-  filePath: string;
-  alt?: string;
-}
+const logger = getLogger('Twitter');
 
 interface TweetData {
   status: string;
@@ -32,13 +27,25 @@ interface MediaUploadResponse {
   size: number;
 }
 
-export class Twitter {
+export class Twitter extends TweetService {
+  public readonly serviceName: TweetServiceType = 'twitter';
+  // eslint-disable-next-line no-magic-numbers
+  public readonly textMaxChars: number = 280;
+
   protected readonly twit: Twit;
   protected readonly accountName: string;
 
-  constructor(accountName: string) {
+  constructor() {
+    super();
+
+    if (!Twitter.isEnabled()) {
+      throw new Error('Twitter API keys are not set');
+    }
+
+    const rawAccountName = envVars.TWITTER_ACCOUNT_NAME;
+
     this.accountName =
-      accountName[0] === '@' ? accountName.substring(1) : accountName;
+      rawAccountName[0] === '@' ? rawAccountName.substring(1) : rawAccountName;
     this.twit = new Twit({
       consumer_key: envVars.TWITTER_API_KEY!,
       consumer_secret: envVars.TWITTER_API_KEY_SECRET!,
@@ -47,12 +54,21 @@ export class Twitter {
     });
   }
 
+  public static isEnabled(): boolean {
+    return Boolean(
+      envVars.TWITTER_API_KEY &&
+        envVars.TWITTER_API_KEY_SECRET &&
+        envVars.TWITTER_ACCESS_TOKEN &&
+        envVars.TWITTER_ACCESS_TOKEN_SECRET
+    );
+  }
+
   /**
    * Tweet text with images
    */
   public async tweetImages(
     text: string,
-    images: TwitterImageInfo[]
+    images: TweetImageInfo[]
   ): Promise<string | undefined> {
     const media_ids = await Promise.all(
       images.map((image) => this.uploadImage(image))
@@ -83,7 +99,7 @@ export class Twitter {
   /**
    * Upload an image and return its ID
    */
-  protected async uploadImage(image: TwitterImageInfo): Promise<string> {
+  protected async uploadImage(image: TweetImageInfo): Promise<string> {
     // twitter only allows 1 image if a gif is include, and since we are
     // handling screenshots here, we just convert them to png before
     // uploading them

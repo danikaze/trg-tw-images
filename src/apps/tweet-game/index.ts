@@ -1,8 +1,9 @@
+import { unlinkSync } from 'fs';
+
 import { GAME_PREFERRED_LANGS, IMAGES_MAX } from '@utils/constants';
 import { downloadImages } from '@utils/download';
 import { getLogger } from '@utils/logger';
 import { selectRandom } from '@utils/random';
-import { unlinkSync } from 'fs';
 import { getGameSource } from 'src/game-source';
 import { GameSource, GetRandomGameOptions } from 'src/game-source/base';
 import {
@@ -12,13 +13,18 @@ import {
   GameSourceType,
   PlatformType,
 } from 'src/game-source/types';
+import {
+  TweetImageInfo,
+  TweetService,
+  TweetServiceType,
+} from 'src/tweet-services';
+import { getTweetService } from 'src/tweet-services/get';
 import { TweetTracker } from 'src/tweet-tracker';
-import { Twitter, TwitterImageInfo } from 'src/twitter';
-import { envVars } from './utils/env-vars';
 import { gameQualifies } from './utils/game-qualifies';
 import { getTweetText } from './utils/get-tweet-text';
 
 export interface AppOptions {
+  services: TweetService[];
   gameSource?: GameSourceType;
   gameId?: number | string;
   skipCleaning?: boolean;
@@ -36,13 +42,20 @@ export class App {
   // eslint-disable-next-line no-magic-numbers
 
   protected readonly gameSource: GameSource;
-  protected readonly tweetTracker: TweetTracker;
+  protected readonly tweetTracker: Partial<
+    Record<TweetServiceType, TweetTracker>
+  >;
 
   protected readonly options: AppOptions;
 
   constructor(options: AppOptions) {
     this.gameSource = getGameSource(options.gameSource || 'mobygames');
-    this.tweetTracker = new TweetTracker();
+    this.tweetTracker = options.services.reduce((trackers, service) => {
+      trackers[service.serviceName] = new TweetTracker({
+        service: service.serviceName,
+      });
+      return trackers;
+    }, {} as typeof App.prototype.tweetTracker);
 
     this.options = options;
   }
@@ -63,12 +76,9 @@ export class App {
     do {
       tries++;
       game = await this.getGame();
-    } while (
-      tries < maxTries &&
-      (!gameQualifies(game) || this.tweetTracker.gameExists(game!))
-    );
+    } while (tries < maxTries && !this.isGameUsable(game));
 
-    if (!game) {
+    if (!this.isGameUsable(game)) {
       logger.warn(`Couldn't find a game after ${tries} tries`);
       return;
     }
@@ -78,13 +88,28 @@ export class App {
     );
 
     const images = await this.getImages(game);
-    const tweetUrl = await this.tweet(game, images);
+    const tweetUrls = await this.tweet(game, images);
 
-    if (tweetUrl) {
-      this.tweetTracker.addGame(game, tweetUrl);
+    if (tweetUrls) {
+      Object.entries(tweetUrls || {}).forEach(([service, tweetUrl]) => {
+        if (!tweetUrl) return;
+        this.tweetTracker[service as TweetServiceType]?.addGame(
+          game!,
+          tweetUrl
+        );
+      });
     }
 
     await this.clean(images);
+  }
+
+  protected isGameUsable(game: Game | undefined): game is Game {
+    return (
+      gameQualifies(game) &&
+      this.options.services.some(
+        (service) => !this.tweetTracker[service.serviceName]!.gameExists(game)
+      )
+    );
   }
 
   protected async getGame(): Promise<Game | undefined> {
@@ -107,7 +132,7 @@ export class App {
   /**
    * Select which images to use from a game
    */
-  protected async getImages(game: Game): Promise<TwitterImageInfo[]> {
+  protected async getImages(game: Game): Promise<TweetImageInfo[]> {
     const urls: string[] = [];
 
     // Try to get one cover of the desired language
@@ -147,21 +172,21 @@ export class App {
   }
 
   /**
-   * Send the tweet with the available information
+   * Send the tweet with the available information to every service loaded
    *
    * @returns `true` if the tweet was sent
    */
   protected async tweet(
     game: Game,
-    images: TwitterImageInfo[]
-  ): Promise<string | undefined> {
-    const text = getTweetText(game);
+    images: TweetImageInfo[]
+  ): Promise<Partial<Record<TweetServiceType, string>> | undefined> {
+    const { services } = this.options;
 
     logger.debug(
-      'Tweet',
+      `Tweet [${services.map((s) => s.serviceName).join(', ')}]`,
       JSON.stringify(
         {
-          text,
+          game: game.title,
           images: images.map((img) => img.filePath),
         },
         null,
@@ -179,18 +204,30 @@ export class App {
       return;
     }
 
-    try {
-      const twitter = new Twitter(envVars.TWITTER_ACCOUNT_NAME!);
-      return twitter.tweetImages(text, images);
-    } catch (e) {
-      return;
-    }
+    const res: Partial<Record<TweetServiceType, string>> = {};
+    await Promise.all(
+      services.map(async (service) => {
+        try {
+          const text = getTweetText(game, service.textMaxChars);
+          const url = await service.tweetImages(text, images);
+
+          if (!url) {
+            logger.error(`No url when tweeting to ${service.serviceName}`);
+          }
+
+          res[service.serviceName] = url;
+        } catch (e) {
+          logger.error(String(e));
+        }
+      })
+    );
+    return res;
   }
 
   /**
    * Remove images from the temporal folder
    */
-  protected async clean(images: TwitterImageInfo[]): Promise<void> {
+  protected async clean(images: TweetImageInfo[]): Promise<void> {
     if (this.options.skipCleaning) {
       logger.debug(`Skipping cleaning...`);
       return;
@@ -199,7 +236,7 @@ export class App {
     let ok = 0;
     for (const image of images) {
       try {
-        logger.debug(`Removing ${image.filePath}`);
+        logger.debug(`Removing "${image.filePath}"`);
         unlinkSync(image.filePath);
         ok++;
       } catch (error) {

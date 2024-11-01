@@ -14,11 +14,11 @@ async function run(): Promise<void> {
 
   try {
     logger.info(
-      `Starting (v${PACKAGE_VERSION}). cli-options: ${JSON.stringify(
-        cliOptions,
-        null,
-        2
-      )}`
+      [
+        `Starting (v${PACKAGE_VERSION} on Node ${process.version}).`,
+        `services: ${services.join(', ')}`,
+        `cli-options: ${JSON.stringify(cliOptions, null, 2)}`,
+      ].join('\n')
     );
     const app = new App(cliOptions);
     await app.run();

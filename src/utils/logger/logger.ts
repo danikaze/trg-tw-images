@@ -1,8 +1,9 @@
-import { createLogger, transports, format, Logger as Winston } from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
-import { join } from 'path';
 import { grey } from 'chalk';
-import { LoggerLevel, LoggerOptions, NsLogger } from '.';
+import { join } from 'path';
+import { createLogger, format, transports, Logger as Winston } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
+
+import type { LoggerLevel, LoggerOptions, NsLogger } from '.';
 
 interface MessageData extends TransformableInfo {
   level: LoggerLevel;

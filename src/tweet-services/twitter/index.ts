@@ -42,7 +42,7 @@ export class Twitter extends TweetService {
       throw new Error('Twitter API keys are not set');
     }
 
-    const rawAccountName = envVars.TWITTER_ACCOUNT_NAME;
+    const rawAccountName = envVars.TWITTER_ACCOUNT_NAME!;
 
     this.accountName =
       rawAccountName[0] === '@' ? rawAccountName.substring(1) : rawAccountName;

@@ -6,17 +6,20 @@ Bot to upload screenshots of retro games using the twitter API
 
 ### App
 
-| envvar                        | Required | Description                                            |
-| ----------------------------- | -------- | ------------------------------------------------------ |
-| `PRINT_BUILD_CONSTANTS`       |          | When `true`, it will print the webpack build constants |
-| `PATH_LOGS_FOLDER`            |          | Folder to store logs. (`logs` by default)              |
-| `TWITTER_ACCOUNT_NAME`        | tw       | Name of the @twitter account (with or without `@`)     |
-| `TWITTER_API_KEY`             | tw       |                                                        |
-| `TWITTER_API_KEY_SECRET`      | tw       |                                                        |
-| `TWITTER_ACCESS_TOKEN`        | tw       |                                                        |
-| `TWITTER_ACCESS_TOKEN_SECRET` | tw       |                                                        |
-| `PATH_TEMP_FOLDER`            |          |                                                        |
-| `PATH_DATA_FOLDER`            |          |                                                        |
+| envvar                        | Required | Description                                                           |
+| ----------------------------- | -------- | --------------------------------------------------------------------- |
+| `PRINT_BUILD_CONSTANTS`       |          | When `true`, it will print the webpack build constants                |
+| `PATH_LOGS_FOLDER`            |          | Folder to store logs. (`logs` by default)                             |
+| `TWITTER_ACCOUNT_NAME`        | tw       | Name of the @twitter account (with or without `@`)                    |
+| `TWITTER_API_KEY`             | tw       |                                                                       |
+| `TWITTER_API_KEY_SECRET`      | tw       |                                                                       |
+| `TWITTER_ACCESS_TOKEN`        | tw       |                                                                       |
+| `TWITTER_ACCESS_TOKEN_SECRET` | tw       |                                                                       |
+| `BLUESKY_ACCOUNT_NAME`        | bs       | Name of the bsky account as `username.bsky.social` or just `username` |
+| `BLUESKY_PASSWORD`            | bs       | Encoded in base64                                                     |
+| `BLUESKY_IMAGE_MAX_SIZE`      |          |                                                                       |
+| `PATH_TEMP_FOLDER`            |          |                                                                       |
+| `PATH_DATA_FOLDER`            |          |                                                                       |
 
 ### MobyGames
 

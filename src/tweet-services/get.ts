@@ -1,4 +1,5 @@
-import type { TweetServiceType, TweetService, TweetServiceStatic } from '.';
+import type { TweetService, TweetServiceType } from '.';
+import { Bsky } from './bsky';
 import { Twitter } from './twitter';
 
 export function getTweetService(type: TweetServiceType): TweetService {
@@ -15,7 +16,7 @@ export function getTweetService(type: TweetServiceType): TweetService {
 }
 
 export function getEnabledTweetServices(): TweetService[] {
-  const ALL_SERVICES = [Twitter];
+  const ALL_SERVICES = [Twitter, Bsky];
 
   return ALL_SERVICES.reduce((all, Service) => {
     if (Service.isEnabled()) {

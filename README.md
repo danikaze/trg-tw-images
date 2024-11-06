@@ -18,7 +18,6 @@ Bot to upload screenshots of retro games using the twitter API
 | `TWITTER_ACCESS_TOKEN_SECRET` | tw       |                                                                       |
 | `BLUESKY_ACCOUNT_NAME`        | bs       | Name of the bsky account as `username.bsky.social` or just `username` |
 | `BLUESKY_PASSWORD`            | bs       | Encoded in base64                                                     |
-| `BLUESKY_IMAGE_MAX_SIZE`      |          |                                                                       |
 | `PATH_TEMP_FOLDER`            |          |                                                                       |
 | `PATH_DATA_FOLDER`            |          |                                                                       |
 

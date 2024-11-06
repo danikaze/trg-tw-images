@@ -18,8 +18,8 @@ import {
   TweetService,
   TweetServiceType,
 } from 'src/tweet-services';
-import { getTweetService } from 'src/tweet-services/get';
 import { TweetTracker } from 'src/tweet-tracker';
+import { envVars } from './utils/env-vars';
 import { gameQualifies } from './utils/game-qualifies';
 import { getTweetText } from './utils/get-tweet-text';
 
@@ -204,15 +204,11 @@ export class App {
     await Promise.all(
       services.map(async (service) => {
         try {
-          const text = getTweetText(
-            this.options.lang,
-            game,
-            service.textMaxChars
-          );
+          const text = getTweetText(game, service.textMaxChars);
 
           logger.debug(
             [
-              `Text for ${service.serviceName} `,
+              `Text [${envVars.LANG}] for ${service.serviceName} `,
               `(${text.length}/${service.textMaxChars} chars):\n`,
               text,
             ].join('')

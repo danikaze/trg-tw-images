@@ -186,6 +186,7 @@ export class App {
       `Tweet [${services.map((s) => s.serviceName).join(', ')}]`,
       JSON.stringify(
         {
+          gameId: game.id,
           game: game.title,
           images: images.map((img) => img.filePath),
         },
@@ -193,11 +194,6 @@ export class App {
         2
       )
     );
-
-    if (this.options.dry) {
-      logger.debug(`Exiting due to --dry flag`);
-      return;
-    }
 
     if (images.length === 0) {
       logger.error(`No images to tweet`);
@@ -208,7 +204,27 @@ export class App {
     await Promise.all(
       services.map(async (service) => {
         try {
-          const text = getTweetText(game, service.textMaxChars);
+          const text = getTweetText(
+            this.options.lang,
+            game,
+            service.textMaxChars
+          );
+
+          logger.debug(
+            [
+              `Text for ${service.serviceName} `,
+              `(${text.length}/${service.textMaxChars} chars):\n`,
+              text,
+            ].join('')
+          );
+
+          if (this.options.dry) {
+            logger.debug(
+              `Skipping posting on ${service.serviceName} due to --dry`
+            );
+            return;
+          }
+
           const url = await service.tweetImages(text, images);
 
           if (!url) {

@@ -18,7 +18,7 @@ async function run(): Promise<void> {
     logger.info(
       [
         `Starting (v${PACKAGE_VERSION} on Node ${process.version}).`,
-        `services: ${services.join(', ')}`,
+        `services: ${services.map((s) => s.serviceName).join(', ')}`,
         `cli-options: ${JSON.stringify(cliOptions, null, 2)}`,
       ].join('\n')
     );

@@ -1,14 +1,16 @@
 import { getLogger } from '@utils/logger';
 import { join } from 'path';
+import { TweetLang } from 'src/game-source/types';
 
 const logger = getLogger();
 
 const DEFAULT_PATH_TEMP_FOLDER = join(__dirname, 'temp');
 const DEFAULT_PATH_DATA_FOLDER = join(__dirname, 'data');
 
-const REQUIRED_ENV_VARS: (keyof AppEnvVars)[] = [];
+const REQUIRED_ENV_VARS: (keyof AppEnvVars)[] = ['LANG'];
 
 export interface AppEnvVars {
+  LANG: TweetLang;
   BLUESKY_ACCOUNT_NAME?: string;
   BLUESKY_PASSWORD?: string;
   BLUESKY_IMAGE_MAX_SIZE: number;
@@ -22,7 +24,19 @@ export interface AppEnvVars {
 }
 
 export const envVars: AppEnvVars = (() => {
-  const vars: Partial<AppEnvVars> = {
+  const lang = (() => {
+    // check that the provided language is one of the accepted ones (and normalize it)
+    const inputLangLc = (process.env.LANG || '').toLowerCase();
+    const acceptedLangs = Object.values(TweetLang);
+    for (const acceptedLang of acceptedLangs) {
+      if (inputLangLc === acceptedLang.toLowerCase()) {
+        return acceptedLang;
+      }
+    }
+  })()!;
+
+  const vars: AppEnvVars = {
+    LANG: lang,
     BLUESKY_ACCOUNT_NAME: process.env.BLUESKY_ACCOUNT_NAME,
     BLUESKY_PASSWORD: process.env.BLUESKY_PASSWORD,
     TWITTER_ACCOUNT_NAME: process.env.TWITTER_ACCOUNT_NAME,
@@ -36,7 +50,7 @@ export const envVars: AppEnvVars = (() => {
 
   const missing = REQUIRED_ENV_VARS.filter(
     (name) => process.env[name] === undefined
-  ).map(([name]) => ` - process.env.${name}`);
+  ).map((name) => ` - process.env.${name}`);
 
   if (missing.length > 0) {
     logger.error(

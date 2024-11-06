@@ -1,6 +1,28 @@
 import { OTHER_PLATFORMS_MAX, OTHER_PLATFORMS_MIN } from '@utils/constants';
 import { getPlatformName } from 'src/game-source';
-import { Game } from 'src/game-source/types';
+import { Game, TweetLang } from 'src/game-source/types';
+import { envVars } from './env-vars';
+
+type TranslatedTexts = {
+  title: (gameTitle: string) => string;
+  description: (text: string) => string;
+  otherPlatforms: () => string;
+};
+
+const ALL_TEXTS: Record<TweetLang, TranslatedTexts> = {
+  [TweetLang.ES]: {
+    title: (gameTitle) => `【${gameTitle}】`,
+    description: (text) => ` ※ ${text}`,
+    otherPlatforms: () => ' ※ Otras plataformas',
+  },
+  [TweetLang.EN]: {
+    title: (gameTitle) => `🕹️ ${gameTitle}`,
+    description: (text) => ` 🖼️ ${text}`,
+    otherPlatforms: () => ' 🎮 Other platforms',
+  },
+};
+
+const TEXTS: TranslatedTexts = ALL_TEXTS[envVars.LANG];
 
 export function getTweetText(game: Game, maxChars: number): string {
   const line1 = getTitle(game);
@@ -15,7 +37,7 @@ export function getTweetText(game: Game, maxChars: number): string {
 }
 
 function getTitle(game: Game): string {
-  return `【${game.title}】`;
+  return TEXTS.title(game.title);
 }
 
 function getDescription(game: Game): string {
@@ -29,7 +51,7 @@ function getDescription(game: Game): string {
       ? `${gamePlatform} (${gameYear})`
       : gameYear || gamePlatform;
 
-  return line ? ` ※ ${line}` : '';
+  return line ? TEXTS.description(line) : '';
 }
 
 function getOtherPlatforms(
@@ -37,13 +59,10 @@ function getOtherPlatforms(
   totalAvailableCharacters: number
 ): string | undefined {
   /**
-   * 1 for the new line
-   * 2 for ellipsis
-   * 1 extra for each 【】 in the title
-   * 1 extra for each ※
+   * 2 for the ellipsis (counts like 1 in bsky but 2 in twitter)
    */
-  const TEXT_EXTRA_LENGTH = 7;
-  const otherPlatformsText = ' ※ Otras plataformas: ';
+  const TEXT_EXTRA_LENGTH = 2;
+  const otherPlatformsText = TEXTS.otherPlatforms() + ': ';
   const otherPlatforms: string[] = [];
   const separator = ', ';
 

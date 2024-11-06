@@ -11,6 +11,11 @@ export interface Platform {
   name: string;
 }
 
+export enum TweetLang {
+  ES = 'es',
+  EN = 'en',
+}
+
 export const enum CoverArtType {
   FRONT_COVER = 'FRONT_COVER',
   BACK_COVER = 'BACK_COVER',

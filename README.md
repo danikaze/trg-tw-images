@@ -8,6 +8,7 @@ Bot to upload screenshots of retro games using the twitter API
 
 | envvar                        | Required | Description                                                           |
 | ----------------------------- | -------- | --------------------------------------------------------------------- |
+| `LANG`                        | ✔        | Language of the tweet text (`es` \| `en`)                             |
 | `PRINT_BUILD_CONSTANTS`       |          | When `true`, it will print the webpack build constants                |
 | `PATH_LOGS_FOLDER`            |          | Folder to store logs. (`logs` by default)                             |
 | `TWITTER_ACCOUNT_NAME`        | tw       | Name of the @twitter account (with or without `@`)                    |

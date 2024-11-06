@@ -29,7 +29,7 @@ export class TweetTracker {
       length: 1000,
       filePath: join(
         envVars.PATH_DATA_FOLDER,
-        `tweet-tracker.${options.service}.json`
+        `tweet-tracker.${options.service}.${envVars.LANG}.json`
       ),
       ...options,
     };

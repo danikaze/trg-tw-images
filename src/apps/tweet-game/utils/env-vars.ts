@@ -13,7 +13,6 @@ export interface AppEnvVars {
   LANG: TweetLang;
   BLUESKY_ACCOUNT_NAME?: string;
   BLUESKY_PASSWORD?: string;
-  BLUESKY_IMAGE_MAX_SIZE: number;
   TWITTER_ACCOUNT_NAME?: string;
   TWITTER_API_KEY?: string;
   TWITTER_API_KEY_SECRET?: string;

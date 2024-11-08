@@ -4,7 +4,7 @@ import { GAME_PREFERRED_LANGS, IMAGES_MAX } from '@utils/constants';
 import { downloadImages } from '@utils/download';
 import { getLogger } from '@utils/logger';
 import { selectRandom } from '@utils/random';
-import { getGameSource } from 'src/game-source';
+import { getGameSource, getPlatformName } from 'src/game-source';
 import { GameSource, GetRandomGameOptions } from 'src/game-source/base';
 import {
   CoverArtType,
@@ -12,6 +12,7 @@ import {
   Game,
   GameSourceType,
   PlatformType,
+  TweetLang,
 } from 'src/game-source/types';
 import {
   TweetImageInfo,
@@ -34,6 +35,23 @@ export interface AppOptions {
   minYear?: number;
   maxYear?: number;
 }
+
+type TranslatedTexts = {
+  frontCover: (game: Game) => string;
+};
+
+const ALL_TEXTS: Record<TweetLang, TranslatedTexts> = {
+  [TweetLang.ES]: {
+    frontCover: ({ title, platform }) =>
+      `Portada del juego ${title} para ${getPlatformName(platform)}`,
+  },
+  [TweetLang.EN]: {
+    frontCover: ({ title, platform }) =>
+      `Front cover from the game ${title} for ${getPlatformName(platform)}`,
+  },
+};
+
+const TEXTS: TranslatedTexts = ALL_TEXTS[envVars.LANG];
 
 const logger = getLogger('App');
 const MAX_TRIES = 10;
@@ -133,7 +151,7 @@ export class App {
    * Select which images to use from a game
    */
   protected async getImages(game: Game): Promise<TweetImageInfo[]> {
-    const urls: string[] = [];
+    const images: { url: string; alt?: string }[] = [];
 
     // Try to get one cover of the desired language
     // 1. sort the covers by language
@@ -157,18 +175,27 @@ export class App {
       .find((cover) => cover.scanOf === CoverArtType.FRONT_COVER);
 
     if (frontCover) {
-      urls.push(frontCover.url);
+      images.push({
+        url: frontCover.url,
+        alt: TEXTS.frontCover(game),
+      });
     }
 
     // Other screenshots
     const screenshots = selectRandom(
       game.screenshots,
-      IMAGES_MAX - urls.length
-    ).map((screenshot) => screenshot.url);
-    urls.push(...screenshots);
+      IMAGES_MAX - images.length
+    ).map((screenshot) => ({
+      url: screenshot.url,
+      alt: screenshot.caption,
+    }));
+    images.push(...screenshots);
 
-    const filePaths = await downloadImages(urls);
-    return filePaths.map((filePath) => ({ filePath }));
+    const filePaths = await downloadImages(images.map((img) => img.url));
+    return filePaths.map((filePath, i) => ({
+      filePath,
+      alt: images[i].alt,
+    }));
   }
 
   /**

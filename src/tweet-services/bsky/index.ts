@@ -1,9 +1,10 @@
 import { AtpAgent, BlobRef, ComAtprotoServerCreateSession } from '@atproto/api';
 import { getLogger } from '@utils/logger';
 import { resizeImage } from '@utils/resize-image';
-import { envVars } from 'src/apps/tweet-game/utils/env-vars';
-import { TweetImageInfo, TweetService, TweetServiceType } from '..';
 import { readFile } from 'fs/promises';
+import { envVars } from 'src/apps/tweet-game/utils/env-vars';
+import { TweetLang } from 'src/game-source/types';
+import { TweetImageInfo, TweetService, TweetServiceType } from '..';
 
 const logger = getLogger('Bluesky');
 
@@ -23,6 +24,11 @@ type PostResult = Partial<{
   uri: string;
   validationStatus: string;
 }>;
+
+const LANGS: Record<TweetLang, string> = {
+  [TweetLang.ES]: 'es-ES',
+  [TweetLang.EN]: 'en-US',
+};
 
 export class Bsky extends TweetService {
   public readonly serviceName: TweetServiceType = 'bsky';
@@ -54,7 +60,8 @@ export class Bsky extends TweetService {
    */
   public async tweetImages(
     text: string,
-    images: TweetImageInfo[]
+    images: TweetImageInfo[],
+    langs: TweetLang[]
   ): Promise<string | undefined> {
     try {
       if (!this.loggedIn) {
@@ -79,7 +86,7 @@ export class Bsky extends TweetService {
 
       const postRes = await this.agent.post({
         text,
-        langs: ['es-ES'],
+        langs: langs.map((lang) => LANGS[lang]),
         createdAt: new Date().toISOString(),
         embed: {
           $type: 'app.bsky.embed.images',

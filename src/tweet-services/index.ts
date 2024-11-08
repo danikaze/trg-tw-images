@@ -1,3 +1,5 @@
+import { TweetLang } from 'src/game-source/types';
+
 export type TweetServiceType = 'twitter' | 'bsky';
 
 export interface TweetImageInfo {
@@ -24,6 +26,7 @@ export abstract class TweetService implements TweetServiceStatic {
    */
   public abstract tweetImages(
     text: string,
-    images: TweetImageInfo[]
+    images: TweetImageInfo[],
+    langs: TweetLang[]
   ): Promise<string | undefined>;
 }

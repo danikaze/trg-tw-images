@@ -1,10 +1,11 @@
+import { IMAGES_INCLUDE_ALT } from '@utils/constants';
+import { gif2png } from '@utils/gif-to-png';
+import { getLogger } from '@utils/logger';
 import { readFile } from 'fs/promises';
 import { extname } from 'path';
-import Twit from 'twit';
-import { IMAGES_INCLUDE_ALT } from '@utils/constants';
-import { getLogger } from '@utils/logger';
-import { gif2png } from '@utils/gif-to-png';
 import { envVars } from 'src/apps/tweet-game/utils/env-vars';
+import { TweetLang } from 'src/game-source/types';
+import Twit from 'twit';
 
 import { TweetImageInfo, TweetService, TweetServiceType } from '..';
 
@@ -68,7 +69,8 @@ export class Twitter extends TweetService {
    */
   public async tweetImages(
     text: string,
-    images: TweetImageInfo[]
+    images: TweetImageInfo[],
+    langs: TweetLang[]
   ): Promise<string | undefined> {
     const media_ids = await Promise.all(
       images.map((image) => this.uploadImage(image))

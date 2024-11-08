@@ -221,7 +221,7 @@ export class App {
             return;
           }
 
-          const url = await service.tweetImages(text, images);
+          const url = await service.tweetImages(text, images, [envVars.LANG]);
 
           if (!url) {
             logger.error(`No url when tweeting to ${service.serviceName}`);

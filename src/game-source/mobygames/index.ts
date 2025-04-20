@@ -106,8 +106,12 @@ export class MobyGamesGameSource extends GameSource {
   }
 
   private async updateData(): Promise<void> {
-    await this.updatePlatforms();
-    await this.updateGames();
+    try {
+      await this.updatePlatforms();
+      await this.updateGames();
+    } catch (e: unknown) {
+      logger.error(`Error while updating MobyGames data: ${e}`);
+    }
   }
 
   private async updatePlatforms(): Promise<void> {
